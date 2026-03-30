@@ -1,0 +1,33 @@
+Use the current pyAIGameEngine project state as truth.
+
+Task:
+Draft a concrete AI inference scheduling architecture spec for pyAIGameEngine.
+
+Requirements:
+1. Define an AI subsystem that is not tied to running every model every plank-tic.
+2. Introduce model families with:
+   - cadence
+   - max input staleness
+   - max output staleness
+   - stage deadline
+   - fallback policy
+3. Define:
+   - CPU authoritative game state
+   - CPU pinned feature pack buffers
+   - GPU feature store
+   - GPU output store
+   - freshness/version tracking
+4. Show where AI scheduling, CPU->GPU transfer, inference launch, GPU->CPU output retrieval, physics, and rendering fit into the plank-tic stage flow.
+5. Include likely bottlenecks:
+   - launch overhead
+   - synchronization points
+   - feature packing
+   - fragmented copies
+   - output scattering
+6. Include guidance for:
+   - batching vs many small models
+   - streams
+   - pinned memory
+   - non_blocking transfers
+   - future CUDA graph capture where shapes are stable
+7. End with explicit early architectural decisions and a recommended POC path.

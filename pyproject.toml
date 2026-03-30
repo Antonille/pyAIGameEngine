@@ -1,0 +1,8 @@
+[project]
+name = "pyAIGameEngine-workspace"
+version = "0.0.22"
+description = "Workspace scaffold for pyAIGameEngine and proof-of-concepts"
+requires-python = ">=3.12,<3.13"
+
+[tool.setuptools]
+py-modules = []

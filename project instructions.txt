@@ -1,0 +1,70 @@
+This project is for designing, researching, prototyping, and implementing a Python hybrid game engine / physics simulation engine with modular AI components. The core priority is to design the architecture early so each update cycle stays efficient enough to leave compute headroom for AI-driven game behavior as the project grows.
+
+Use this vocabulary unless later revised:
+- plank-tic = smallest game/sim time unit; all game-time differences are integer plank-tics.
+- plank-pix = smallest distance unit.
+- voxellino = smallest scalar-valued volume element.
+- voxel = smallest cubic boundary/surface element used to describe geometry.
+- coordinate system = packed set of voxels.
+- master stationary reference frame = coordinate system containing the extent of all others.
+- shapes/objects = entities defined relative to coordinate systems, with surface/boundary and property descriptions.
+
+Project direction:
+- Favor scalable architecture over quick hacks.
+- Start simple if needed, but design so added mechanics, physics, and AI do not force a major refactor.
+- Treat efficient comparison/rendering of objects into a common coordinate space, interaction calculation, and repacking of updates as a central design problem.
+- Keep AI integration in scope from the beginning.
+- Current local project truth: C:\PythonDev\Dev1\pyGames\pyAIGameEngine, Python 3.12 single `.venv`, fallback-first POC1 path.
+
+Research-first rule:
+Before building custom systems, research existing Python packages for game loop/rendering, physics/collision, numeric/tensor tools, profiling/benchmarking, JIT/vectorization/multiprocessing/GPU offloading, level/object authoring, and AI/ML packages that can support modular game behavior.
+
+Tracking rule:
+Always maintain a restartable project state. Keep updated, as appropriate:
+- conceptual goals
+- architecture assumptions
+- research findings / candidates
+- options under consideration
+- design decisions and rationale
+- implementation plan / roadmap
+- current status and next steps
+- milestones completed
+- lessons learned
+- risks / open questions
+- important prompts / templates
+- exact local instructions for anything the user must do outside ChatGPT
+
+Whenever research or implementation yields a meaningful result, record:
+- topic
+- timestamp
+- status (researching / prototyping / adopted / rejected / deferred)
+- options considered
+- decision
+- rationale
+- tradeoffs / consequences
+- follow-up actions
+- related files / prompts / experiments
+
+Status / handoff rule:
+At stopping points, always leave a clean handoff that states current phase, what is decided, what remains open, what artifacts/code exist, highest-priority next steps, and the next prompt to use.
+
+Snapshot / archive rule:
+Keep local code and working memory aligned with timestamped snapshots. Prefer sparse snapshots for small deltas and full clean snapshots at milestones. Full snapshots must exclude transient or unclean files such as `.venv`, `__pycache__`, `.pyc`, `.egg-info`, Numba cache artifacts, and other build/session byproducts.
+
+File-transfer / automation rule:
+Prefer automation over manual multi-step handling. Clearly state what files are needed, where they come from, where they go, and what the user must do locally. Use timestamps on transferred files when practical. Include updated status, progress, decisions, lessons learned, and next steps in snapshots when appropriate.
+
+Prompt-management rule:
+Treat important prompts as project artifacts. Keep prompt wording current when plans change. Whenever possible, author the next prompt so it is ready to paste into this chat or a new chat in this project.
+
+GitHub / repo rule:
+Keep the repo private until the first major architecture milestone. Automate GitHub and local-repo maintenance as much as possible. At milestone or stopping points, prepare the project so it is easy to commit, update progress files and prompts, refresh snapshots, push to GitHub, and leave local/remote state clean.
+
+Named procedures currently approved:
+- validate and update = ingest uploaded snapshot, reconcile against expected truth, fix inconsistencies, update docs/versioning, and deliver sparse/full snapshot plus next steps.
+- full consolidate = produce a fully refreshed clean snapshot with aligned docs, archive state, and tracking files.
+- sparse refresh = deliver only changed files plus modification-history update and copy-in instructions.
+- sanity reconcile = compare uploaded local state against expected truth and report safe vs suspicious differences.
+- benchmark compare = run or prepare numpy vs numba comparison and summarize timing.
+- promote candidate = evaluate whether a POC-local component should move to shared engine space.
+- doc currentize = update only docs/tracking/prompt artifacts to match code reality.

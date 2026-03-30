@@ -1,0 +1,37 @@
+{
+  "baseline_id": "projection_baseline_v1",
+  "frozen_on": "2026-03-30",
+  "description": "First frozen weighting set for early complexity-normalized performance estimates.",
+  "components": [
+    {
+      "component_id": "physics_simulation_core",
+      "target_weight": 0.45,
+      "default_realization_fraction": 1.0,
+      "rationale": "Current benchmark directly exercises the fallback-first authoritative simulation loop."
+    },
+    {
+      "component_id": "scheduler_packet_system",
+      "target_weight": 0.2,
+      "default_realization_fraction": 1.0,
+      "rationale": "Current benchmark and Gate D acceptance cover cadence, freshness, packet, and action-application behavior."
+    },
+    {
+      "component_id": "adapter_baseline_policy_layer",
+      "target_weight": 0.1,
+      "default_realization_fraction": 0.35,
+      "rationale": "Adapter-facing execution exists only as an early gym rollout path and is not yet the primary benchmark boundary."
+    },
+    {
+      "component_id": "reporting_instrumentation_overhead",
+      "target_weight": 0.05,
+      "default_realization_fraction": 0.45,
+      "rationale": "The integrated harness and report regeneration now exist, but remain an early first slice rather than the final long-lifecycle system."
+    },
+    {
+      "component_id": "future_baseline_rl_agent_inference_allowance",
+      "target_weight": 0.2,
+      "default_realization_fraction": 0.1,
+      "rationale": "A learned or richer baseline RL agent is not yet part of the authoritative benchmark path."
+    }
+  ]
+}

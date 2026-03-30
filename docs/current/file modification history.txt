@@ -1,0 +1,42 @@
+2026-03-28 10:53:00 -0400 | workspace 0.0.8 | full
+modified:
+- project instructions.txt
+- README.md
+- README.txt
+- README_sparse_snapshot.txt
+- pyproject.toml
+- .gitignore
+- POC1_SoaFirst/README.md
+- POC1_SoaFirst/pyproject.toml
+- scripts/windows/install_project.ps1
+- scripts/windows/rebuild_venv_py312.ps1
+- scripts/windows/export_snapshot.ps1
+- scripts/windows/export_snapshot_clean_7zip.cmd
+- scripts/windows/snapshot_clean_excludes.txt
+- docs/current/2026 03 28 REV1.3 pyAIGameEngine Project Instructions.md
+- docs/current/2026 03 28 REV1.3 Project Resource Guide.md
+- docs/current/2026 03 28 REV1.3 project state manifest.md
+- docs/current/2026 03 28 REV1.3 pyAIGameEngine workflow.md
+- docs/current/2026 03 28 REV1.3 progress notes.md
+- docs/current/2026 03 28 REV1.3 lessons learned.md
+- docs/current/2026 03 28 REV1.3 optimized prompts and templates.md
+- docs/current/2026 03 28 REV1.3 next step prompts.md
+- docs/current/2026 03 28 REV1.3 Chat Bootstrap Prompt.md
+- docs/current/2026 03 28 REV1.3 AI inference scheduling and runtime schema architecture.md
+- docs/current/2026 03 28 REV1.3 install and dependency notes.md
+- docs/current/2026 03 28 REV1.3 POC1_SoaFirst workflow.md
+- docs/current/2026 03 28 REV1.3 modification history.md
+- docs/current/file modification history.txt
+- docs/CURRENT_PROJECT_RESOURCE_GUIDE.md
+- docs/CURRENT_PROJECT_INSTRUCTIONS.md
+- docs/CURRENT_PROJECT_STATE_MANIFEST.md
+- docs/CURRENT_WORKFLOW.md
+- docs/CURRENT_NEXT_STEP_PROMPTS.md
+- docs/CURRENT_CHAT_BOOTSTRAP_PROMPT.md
+reason:
+- consolidate docs into current/archive structure
+- normalize active environment/path assumptions
+- fix install bootstrap expectations
+- add clean snapshot tooling using 7-Zip
+artifact:
+- pyAIGameEngine_full_clean_snapshot_0.0.8_2026-03-28.zip
