@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import time
 from pathlib import Path
@@ -196,8 +197,97 @@ def capture_gym_rollout(*, steps: int, backend_mode: str, seed: int = 0, action_
         "backend_mode": backend_mode,
         "seed": int(seed),
         "action_seed": int(action_seed),
+        "control_path": last_info.get("control_path", "action_packets"),
         "total_reward": float(total_reward),
         "last_event_summary": dict(last_info.get("event_summary", {})),
         "resets": int(resets),
         "last_observation": np.asarray(obs).tolist(),
+        "timing_snapshot": last_info.get("timing_snapshot", {}),
+        "last_external_action_packet_lines": list(last_info.get("last_external_action_packet_lines", [])),
+        "last_packet_apply_summary": dict(last_info.get("last_packet_apply_summary", {})),
     }
+
+
+def _stable_digest(payload: dict[str, Any]) -> str:
+    def default(value: Any):
+        if isinstance(value, np.ndarray):
+            return value.tolist()
+        raise TypeError(f"Unsupported value for deterministic digest: {type(value)!r}")
+
+    text = str(payload).encode("utf-8") if not isinstance(payload, dict) else None
+    if text is None:
+        import json
+        text = json.dumps(payload, sort_keys=True, default=default).encode("utf-8")
+    return hashlib.sha256(text).hexdigest()
+
+
+def capture_fixed_action_replay_validation(*, steps: int, backend_mode: str, seed: int = 0, action_seed: int = 99) -> dict[str, Any]:
+    env_module_path = Path(__file__).resolve().parents[1] / "gym" / "env.py"
+    spec = importlib.util.spec_from_file_location("poc1_engine.gym.env", env_module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Could not load gym environment module from {env_module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    env_class = getattr(module, "POC1GymEnv")
+
+    env_a = env_class(backend_mode=backend_mode)
+    env_b = env_class(backend_mode=backend_mode)
+    env_a.reset(seed=seed)
+    env_b.reset(seed=seed)
+
+    rng = np.random.default_rng(action_seed)
+    action_stream = [rng.uniform(-1.0, 1.0, size=(4,)).astype(np.float32) for _ in range(steps)]
+
+    reward_a = 0.0
+    reward_b = 0.0
+    last_info_a: dict[str, Any] = {}
+    last_info_b: dict[str, Any] = {}
+    obs_a = None
+    obs_b = None
+    for action in action_stream:
+        obs_a, step_reward_a, term_a, trunc_a, last_info_a = env_a.step(action)
+        obs_b, step_reward_b, term_b, trunc_b, last_info_b = env_b.step(action)
+        reward_a += float(step_reward_a)
+        reward_b += float(step_reward_b)
+        if term_a or trunc_a or term_b or trunc_b:
+            break
+
+    replay_a = env_a.capture_replay_snapshot()
+    replay_b = env_b.capture_replay_snapshot()
+    state_a = replay_a["state_snapshot"]
+    state_b = replay_b["state_snapshot"]
+    state_equal = True
+    mismatch_fields: list[str] = []
+    for name, value_a in state_a.items():
+        if name in {"capacity", "action_dim", "obs_dim", "body_count"}:
+            if state_b[name] != value_a:
+                state_equal = False
+                mismatch_fields.append(name)
+            continue
+        arr_a = np.asarray(value_a)
+        arr_b = np.asarray(state_b[name])
+        if not np.array_equal(arr_a, arr_b):
+            state_equal = False
+            mismatch_fields.append(name)
+
+    payload = {
+        "backend": f"simple_integrator:{backend_mode}",
+        "steps": int(steps),
+        "backend_mode": backend_mode,
+        "seed": int(seed),
+        "action_seed": int(action_seed),
+        "control_path": "action_packets",
+        "state_equal": bool(state_equal),
+        "mismatch_fields": mismatch_fields,
+        "total_reward_a": float(reward_a),
+        "total_reward_b": float(reward_b),
+        "reward_equal": bool(np.isclose(reward_a, reward_b)),
+        "final_observation_equal": bool(np.array_equal(np.asarray(obs_a), np.asarray(obs_b))),
+        "snapshot_hash_a": _stable_digest(replay_a),
+        "snapshot_hash_b": _stable_digest(replay_b),
+        "timing_snapshot_a": env_a.timing_snapshot(),
+        "timing_snapshot_b": env_b.timing_snapshot(),
+        "last_event_summary_a": dict(last_info_a.get("event_summary", {})),
+        "last_event_summary_b": dict(last_info_b.get("event_summary", {})),
+    }
+    return payload

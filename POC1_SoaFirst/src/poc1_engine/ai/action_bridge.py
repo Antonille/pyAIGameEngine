@@ -465,7 +465,7 @@ class ActionBridge:
         action_aux = np.clip(0.02 * reward_accum, -1.0, 1.0)
         team_bias = np.where(np.asarray(team_id) > 0.5, 0.08, -0.08).astype(np.float32)
 
-        if output_block_name == "action4_v1":
+        if output_block_name in {"action4_v1", "action4_env_v1"}:
             payload[:, 0] = action_x
             if width > 1:
                 payload[:, 1] = action_y
@@ -519,6 +519,15 @@ def build_default_action_bridge() -> ActionBridge:
             width=4,
             application_mode="replace",
             semantics="direct action vector written by primary reflex family",
+            cache_hit_mode="reuse_packet",
+        )
+    )
+    bridge.register(
+        ActionBlockSchema(
+            block_name="action4_env_v1",
+            width=4,
+            application_mode="replace",
+            semantics="external control packet lane for adapter-facing action vectors before authoritative state.action consumption",
             cache_hit_mode="reuse_packet",
         )
     )

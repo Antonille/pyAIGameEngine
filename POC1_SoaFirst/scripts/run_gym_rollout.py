@@ -13,9 +13,11 @@ def main() -> int:
 
     payload = capture_gym_rollout(steps=args.steps, backend_mode=args.backend_mode)
     print(f"backend={payload['backend']}")
+    print(f"control_path={payload['control_path']}")
     print(f"total_reward={payload['total_reward']:.6f}")
     print(f"last_event_summary={payload['last_event_summary']}")
     print(f"resets={payload['resets']}")
+    print(f"last_packet_apply_summary={payload['last_packet_apply_summary']}")
     return 0
 
 

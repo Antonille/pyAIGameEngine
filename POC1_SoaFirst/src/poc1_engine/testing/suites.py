@@ -8,7 +8,12 @@ from typing import Any, Protocol
 
 from poc1_engine.ai.gate_d_acceptance import run_gate_d_acceptance
 
-from .capture import capture_gym_rollout, capture_headless_benchmark, capture_rigidbody_field_prototype
+from .capture import (
+    capture_fixed_action_replay_validation,
+    capture_gym_rollout,
+    capture_headless_benchmark,
+    capture_rigidbody_field_prototype,
+)
 from .records import ArtifactReference, MetricRecord, SuiteResultRecord
 
 
@@ -269,7 +274,7 @@ class BenchmarkHeadlessSuite:
 class AdapterRLRolloutSuite:
     suite_id: str = "adapter_rl_rollout_v1"
     suite_category: str = "adapter_rl"
-    suite_version: str = "1"
+    suite_version: str = "2"
 
     def run(self, context: SuiteRunContext) -> SuiteResultRecord:
         try:
@@ -314,6 +319,53 @@ class AdapterRLRolloutSuite:
         )
 
 
+@dataclass
+class DeterminismReplaySuite:
+    suite_id: str = "determinism_replay_v1"
+    suite_category: str = "determinism"
+    suite_version: str = "1"
+
+    def run(self, context: SuiteRunContext) -> SuiteResultRecord:
+        payload = capture_fixed_action_replay_validation(
+            steps=min(context.benchmark_steps, 128),
+            backend_mode=context.backend_mode,
+        )
+        checks_failed = 0
+        checks_failed += int(not payload["state_equal"])
+        checks_failed += int(not payload["reward_equal"])
+        checks_failed += int(not payload["final_observation_equal"])
+        checks_passed = 3 - checks_failed
+        status = "pass" if checks_failed == 0 else "fail"
+        artifact_path = context.run_output_dir / "determinism_replay_summary.json"
+        content_hash = _write_json(artifact_path, payload)
+        metrics = [
+            MetricRecord("state_equal", payload["state_equal"], "bool", "validation"),
+            MetricRecord("reward_equal", payload["reward_equal"], "bool", "validation"),
+            MetricRecord("final_observation_equal", payload["final_observation_equal"], "bool", "validation"),
+        ]
+        return SuiteResultRecord(
+            suite_id=self.suite_id,
+            suite_category=self.suite_category,
+            suite_version=self.suite_version,
+            status=status,
+            checks_passed=checks_passed,
+            checks_failed=checks_failed,
+            checks_skipped=0,
+            metrics=metrics,
+            parameters_used={"steps": min(context.benchmark_steps, 128), "backend_mode": context.backend_mode},
+            artifacts=[
+                ArtifactReference(
+                    artifact_type="json_summary",
+                    relative_path=context.relative_path(artifact_path),
+                    description="Fallback-first determinism/replay validation summary.",
+                    producer=self.suite_id,
+                    content_hash=content_hash,
+                )
+            ],
+            summary=payload,
+        )
+
+
 class TestSuiteRegistry:
     def __init__(self) -> None:
         self._suites: dict[str, TestSuite] = {}
@@ -343,6 +395,7 @@ def build_default_registry() -> TestSuiteRegistry:
         AcceptanceGateDSuite(),
         BenchmarkHeadlessSuite(),
         AdapterRLRolloutSuite(),
+        DeterminismReplaySuite(),
     ]:
         registry.register(suite)
     return registry

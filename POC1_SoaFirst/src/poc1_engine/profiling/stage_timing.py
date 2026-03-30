@@ -4,6 +4,7 @@ from collections import OrderedDict
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 import time
+from typing import Any
 
 
 @dataclass
@@ -28,3 +29,18 @@ class StageProfiler:
             avg_ms = (total / max(count, 1)) * 1000.0
             lines.append(f"{name}: total_s={total:.6f} avg_ms={avg_ms:.6f} count={count}")
         return lines
+
+    def summary_dict(self) -> dict[str, dict[str, Any]]:
+        result: dict[str, dict[str, Any]] = {}
+        for name, total in self.totals.items():
+            count = self.counts.get(name, 1)
+            result[name] = {
+                "total_s": float(total),
+                "avg_ms": float((total / max(count, 1)) * 1000.0),
+                "count": int(count),
+            }
+        return result
+
+    def reset(self) -> None:
+        self.totals.clear()
+        self.counts.clear()

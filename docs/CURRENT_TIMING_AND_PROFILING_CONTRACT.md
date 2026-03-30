@@ -1,0 +1,3 @@
+# CURRENT TIMING AND PROFILING CONTRACT
+
+See `2026 03 30 REV4.3 Timing and Profiling Contract.md`.

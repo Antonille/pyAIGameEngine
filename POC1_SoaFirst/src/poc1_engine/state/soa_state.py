@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
+
 import numpy as np
 
 
@@ -40,6 +42,37 @@ class SoAState:
     obs_buf: np.ndarray | None = None
     obs_index: np.ndarray | None = None
     body_count: int = 0
+
+    SNAPSHOT_FIELDS = (
+        "entity_id",
+        "alive",
+        "pos",
+        "rot",
+        "linvel",
+        "angvel",
+        "force",
+        "torque",
+        "inv_mass",
+        "inv_inertia_diag",
+        "shape_type",
+        "shape_param",
+        "render_enabled",
+        "mesh_id",
+        "material_id",
+        "scale",
+        "color",
+        "xform44_snapshot",
+        "render_visible",
+        "agent_active",
+        "agent_id",
+        "policy_id",
+        "team_id",
+        "reward_accum",
+        "action",
+        "action_mask",
+        "obs_buf",
+        "obs_index",
+    )
 
     @classmethod
     def create(cls, capacity: int, action_dim: int = 4, obs_dim: int = 24) -> "SoAState":
@@ -153,3 +186,37 @@ class SoAState:
         self.xform44_snapshot[visible_indices, 13] = self.pos[visible_indices, 1]
         self.xform44_snapshot[visible_indices, 14] = self.pos[visible_indices, 2]
         self.xform44_snapshot[visible_indices, 15] = 1.0
+
+    def export_runtime_snapshot(self) -> dict[str, Any]:
+        snapshot: dict[str, Any] = {
+            "capacity": int(self.capacity),
+            "action_dim": int(self.action_dim),
+            "obs_dim": int(self.obs_dim),
+            "body_count": int(self.body_count),
+        }
+        for name in self.SNAPSHOT_FIELDS:
+            value = getattr(self, name)
+            if value is None:
+                continue
+            snapshot[name] = np.array(value, copy=True)
+        return snapshot
+
+    def restore_runtime_snapshot(self, snapshot: dict[str, Any]) -> None:
+        if int(snapshot["capacity"]) != self.capacity:
+            raise ValueError(f"Snapshot capacity {snapshot['capacity']} does not match state capacity {self.capacity}")
+        if int(snapshot["action_dim"]) != self.action_dim:
+            raise ValueError(f"Snapshot action_dim {snapshot['action_dim']} does not match state action_dim {self.action_dim}")
+        if int(snapshot["obs_dim"]) != self.obs_dim:
+            raise ValueError(f"Snapshot obs_dim {snapshot['obs_dim']} does not match state obs_dim {self.obs_dim}")
+        self.body_count = int(snapshot["body_count"])
+        for name in self.SNAPSHOT_FIELDS:
+            if name not in snapshot:
+                continue
+            target = getattr(self, name)
+            value = np.asarray(snapshot[name])
+            if target is None:
+                setattr(self, name, np.array(value, copy=True))
+                continue
+            if target.shape != value.shape:
+                raise ValueError(f"Snapshot field {name} shape {value.shape} does not match target shape {target.shape}")
+            target[...] = value

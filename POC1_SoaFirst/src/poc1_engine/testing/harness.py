@@ -17,7 +17,7 @@ from .reporting import CurrentTestReportBuilder
 from .suites import SuiteRunContext, TestSuiteRegistry, build_default_registry
 
 SCHEMA_VERSION = "1.0"
-HARNESS_VERSION = "0.1.0"
+HARNESS_VERSION = "0.1.1"
 
 
 @dataclass
@@ -31,8 +31,8 @@ class HarnessConfig:
     execution_mode: str = "benchmark"
     note: str | None = None
     snapshot_id: str = "candidate_snapshot"
-    project_phase: str = "Post-Gate-D, first archival testing/reporting slice"
-    gate_context: str = "Pre-Gate-A, testing/reporting implementation"
+    project_phase: str = "Post-Gate-D, testing/reporting plus AI-boundary hardening"
+    gate_context: str = "Pre-Gate-A, deterministic reset/replay and adapter refit"
 
 
 class IntegratedTestHarness:
@@ -90,6 +90,8 @@ class IntegratedTestHarness:
                 "comparison_rules_v1",
                 "projection_method_v1",
                 "regenerable_current_report_builder_v1",
+                "deterministic_reset_replay_validation_v1",
+                "packet_oriented_minimal_env_adapter_v1",
             ],
             "unimplemented_components": [
                 "full_regression_suite_matrix",
@@ -98,12 +100,12 @@ class IntegratedTestHarness:
                 "binary_or_columnar_archive_mirror",
                 "pdf_report_generation",
             ],
-            "current_gate_status": "testing_reporting_slice_implemented",
+            "current_gate_status": "testing_reporting_slice_plus_adapter_boundary_refinement",
             "current_limitations": [
                 "comparison history is exact-key and file-based only",
                 "projection method is provisional and assumption-heavy",
                 "current report visuals are lightweight SVG scaffolds",
-                "adapter_rl suite may skip when gymnasium is unavailable",
+                "adapter_rl suite remains thin and not a public RL API commitment",
             ],
             "assumptions": [
                 "archival JSONL remains the durable truth for this phase",
@@ -120,6 +122,7 @@ class IntegratedTestHarness:
                 "exact_compatibility_key_matching_for_apples_to_apples",
                 "frozen_projection_weight_baseline_with_per_run_realization_fractions",
                 "per_run_generated_artifacts_under_artifacts/test/generated/runs",
+                "minimal_env_adapter_uses_packet_boundary",
             ],
             "deferred_design_choices": [
                 "parquet_or_sql_mirror",

@@ -1,0 +1,198 @@
+{
+  "action_seed": 99,
+  "backend": "simple_integrator:numpy",
+  "backend_mode": "numpy",
+  "control_path": "action_packets",
+  "final_observation_equal": true,
+  "last_event_summary_a": {
+    "agent_reward": 0,
+    "hit_ground": 0,
+    "hit_wall": 0,
+    "out_of_bounds": 0,
+    "total": 0
+  },
+  "last_event_summary_b": {
+    "agent_reward": 0,
+    "hit_ground": 0,
+    "hit_wall": 0,
+    "out_of_bounds": 0,
+    "total": 0
+  },
+  "mismatch_fields": [],
+  "reward_equal": true,
+  "seed": 0,
+  "snapshot_hash_a": "7301863845c06eeded7c73bfcc044e41dd26871a0ecb17fae49d90bff8bad4ea",
+  "snapshot_hash_b": "7301863845c06eeded7c73bfcc044e41dd26871a0ecb17fae49d90bff8bad4ea",
+  "state_equal": true,
+  "steps": 128,
+  "timing_snapshot_a": {
+    "last_action_application_summary": {
+      "bytes_total": 0,
+      "delete_count": 0,
+      "entity_count": 0,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 0
+    },
+    "last_action_packet_summary": {
+      "bytes_total": 0,
+      "cache_hits": 0,
+      "cache_invalidations": 0,
+      "cache_misses": 0,
+      "delete_count": 0,
+      "entity_count": 0,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 0
+    },
+    "last_ai_transfer_summary": {
+      "batch_count": 0,
+      "bytes_total": 0,
+      "entity_count": 1,
+      "family_count": 0,
+      "feature_width_total": 0,
+      "float32_values_total": 0
+    },
+    "last_input_application_summary": {
+      "bytes_total": 16,
+      "delete_count": 0,
+      "entity_count": 1,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 1
+    },
+    "stage_avg_ms": {
+      "action_application": 0.007481250236196502,
+      "ai": 0.006977343900871347,
+      "event_processing": 0.02230937514013931,
+      "input": 0.01995859270209621,
+      "observation_build": 0.03402265633667412,
+      "physics": 0.026569531087261566,
+      "render_snapshot": 0.032329687201126944
+    },
+    "stage_summary": {
+      "action_application": {
+        "avg_ms": 0.007481250236196502,
+        "count": 128,
+        "total_s": 0.0009576000302331522
+      },
+      "ai": {
+        "avg_ms": 0.006977343900871347,
+        "count": 128,
+        "total_s": 0.0008931000193115324
+      },
+      "event_processing": {
+        "avg_ms": 0.02230937514013931,
+        "count": 128,
+        "total_s": 0.0028556000179378316
+      },
+      "input": {
+        "avg_ms": 0.01995859270209621,
+        "count": 128,
+        "total_s": 0.002554699865868315
+      },
+      "observation_build": {
+        "avg_ms": 0.03402265633667412,
+        "count": 128,
+        "total_s": 0.004354900011094287
+      },
+      "physics": {
+        "avg_ms": 0.026569531087261566,
+        "count": 128,
+        "total_s": 0.0034008999791694805
+      },
+      "render_snapshot": {
+        "avg_ms": 0.032329687201126944,
+        "count": 128,
+        "total_s": 0.004138199961744249
+      }
+    },
+    "step_index": 128
+  },
+  "timing_snapshot_b": {
+    "last_action_application_summary": {
+      "bytes_total": 0,
+      "delete_count": 0,
+      "entity_count": 0,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 0
+    },
+    "last_action_packet_summary": {
+      "bytes_total": 0,
+      "cache_hits": 0,
+      "cache_invalidations": 0,
+      "cache_misses": 0,
+      "delete_count": 0,
+      "entity_count": 0,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 0
+    },
+    "last_ai_transfer_summary": {
+      "batch_count": 0,
+      "bytes_total": 0,
+      "entity_count": 1,
+      "family_count": 0,
+      "feature_width_total": 0,
+      "float32_values_total": 0
+    },
+    "last_input_application_summary": {
+      "bytes_total": 16,
+      "delete_count": 0,
+      "entity_count": 1,
+      "invalidate_count": 0,
+      "no_change_count": 0,
+      "packet_count": 1
+    },
+    "stage_avg_ms": {
+      "action_application": 0.0074929683933078195,
+      "ai": 0.006882031357235974,
+      "event_processing": 0.022014062324160477,
+      "input": 0.0195429678342407,
+      "observation_build": 0.034922656482194725,
+      "physics": 0.02648828103701817,
+      "render_snapshot": 0.03284296917627216
+    },
+    "stage_summary": {
+      "action_application": {
+        "avg_ms": 0.0074929683933078195,
+        "count": 128,
+        "total_s": 0.0009590999543434009
+      },
+      "ai": {
+        "avg_ms": 0.006882031357235974,
+        "count": 128,
+        "total_s": 0.0008809000137262046
+      },
+      "event_processing": {
+        "avg_ms": 0.022014062324160477,
+        "count": 128,
+        "total_s": 0.002817799977492541
+      },
+      "input": {
+        "avg_ms": 0.0195429678342407,
+        "count": 128,
+        "total_s": 0.0025014998827828094
+      },
+      "observation_build": {
+        "avg_ms": 0.034922656482194725,
+        "count": 128,
+        "total_s": 0.004470100029720925
+      },
+      "physics": {
+        "avg_ms": 0.02648828103701817,
+        "count": 128,
+        "total_s": 0.0033904999727383256
+      },
+      "render_snapshot": {
+        "avg_ms": 0.03284296917627216,
+        "count": 128,
+        "total_s": 0.004203900054562837
+      }
+    },
+    "step_index": 128
+  },
+  "total_reward_a": 0.006000000983476639,
+  "total_reward_b": 0.006000000983476639
+}

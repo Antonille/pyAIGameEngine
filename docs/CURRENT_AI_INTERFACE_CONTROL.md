@@ -1,3 +1,3 @@
 # CURRENT AI INTERFACE CONTROL
 
-See `2026 03 29 REV1.7 AI Interface Control Document.md`.
+See `2026 03 30 REV4.3 AI Interface Control.md`.

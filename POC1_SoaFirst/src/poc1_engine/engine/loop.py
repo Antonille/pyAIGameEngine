@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any, Sequence
+
 import numpy as np
 
 from poc1_engine.ai.action_bridge import ActionBridge, summarize_action_packets
 from poc1_engine.ai.scheduler import AIScheduler
 from poc1_engine.ai.transfer_planner import TransferPlanner
 from poc1_engine.engine.stages import STAGE_ORDER, StageName
+from poc1_engine.interfaces.ai_api import AIActionPacket
 from poc1_engine.profiling.stage_timing import StageProfiler
 from poc1_engine.render.render_subset import RenderSubsetBuilder
 from poc1_engine.state.event_buffer import EventBuffer
@@ -65,8 +68,19 @@ class EngineLoop:
             "bytes_total": 0,
         }
         self.ai_schedule_counts: dict[str, int] = {}
-        self.pending_action_packets = []
-        self.last_action_packet_lines = []
+        self.pending_action_packets: list[AIActionPacket] = []
+        self.pending_external_action_packets: list[AIActionPacket] = []
+        self.last_action_packet_lines: list[str] = []
+        self.last_external_action_packet_lines: list[str] = []
+        self.last_input_application_summary = {
+            "packet_count": 0,
+            "entity_count": 0,
+            "bytes_total": 0,
+            "no_change_count": 0,
+            "delete_count": 0,
+            "invalidate_count": 0,
+        }
+        self.cumulative_input_application_summary = dict(self.last_input_application_summary)
         self.last_action_packet_summary = {
             "packet_count": 0,
             "entity_count": 0,
@@ -96,6 +110,39 @@ class EngineLoop:
     def query_events(self, event_type: int | None = None, entity_a: int | None = None) -> np.ndarray:
         return self.event_buffer.query(event_type=event_type, entity_a=entity_a)
 
+    def submit_external_action_packets(self, packets: Sequence[AIActionPacket]) -> None:
+        self.pending_external_action_packets.extend(packets)
+
+    def export_replay_snapshot(self) -> dict[str, Any]:
+        return {
+            "step_index": int(self.step_index),
+            "state_snapshot": self.state.export_runtime_snapshot(),
+        }
+
+    def restore_replay_snapshot(self, snapshot: dict[str, Any]) -> None:
+        self.state.restore_runtime_snapshot(snapshot["state_snapshot"])
+        self.step_index = int(snapshot["step_index"])
+        self.pending_action_packets = []
+        self.pending_external_action_packets = []
+        self.last_action_packet_lines = []
+        self.last_external_action_packet_lines = []
+        self.last_agent_obs = np.zeros((0, self.state.obs_dim), dtype=np.float32)
+        self.last_visible_indices = np.zeros(0, dtype=np.int32)
+        self.last_event_summary = {"total": 0, "hit_ground": 0, "hit_wall": 0, "out_of_bounds": 0, "agent_reward": 0}
+        self.event_buffer.reset()
+
+    def timing_contract_snapshot(self) -> dict[str, Any]:
+        stage_summary = self.profiler.summary_dict()
+        return {
+            "step_index": int(self.step_index),
+            "stage_summary": stage_summary,
+            "stage_avg_ms": {name: values["avg_ms"] for name, values in stage_summary.items()},
+            "last_input_application_summary": dict(self.last_input_application_summary),
+            "last_action_packet_summary": dict(self.last_action_packet_summary),
+            "last_action_application_summary": dict(self.last_action_application_summary),
+            "last_ai_transfer_summary": dict(self.last_ai_transfer_summary),
+        }
+
     def step(self) -> None:
         for stage in STAGE_ORDER:
             with self.profiler.measure(stage.value):
@@ -104,7 +151,7 @@ class EngineLoop:
 
     def _run_stage(self, stage: StageName) -> None:
         if stage == StageName.INPUT:
-            return
+            self._input_stage()
         elif stage == StageName.AI:
             self._ai_stage()
         elif stage == StageName.ACTION_APPLICATION:
@@ -120,6 +167,24 @@ class EngineLoop:
         elif stage == StageName.RENDER_SNAPSHOT:
             self.last_visible_indices = self.render_subset_builder.select_visible_indices(self.state)
             self.render_subset_builder.build_snapshot(self.state, self.last_visible_indices)
+
+    def _input_stage(self) -> None:
+        self.last_input_application_summary = {
+            "packet_count": 0,
+            "entity_count": 0,
+            "bytes_total": 0,
+            "no_change_count": 0,
+            "delete_count": 0,
+            "invalidate_count": 0,
+        }
+        self.last_external_action_packet_lines = []
+        if self.action_bridge is None or not self.pending_external_action_packets:
+            return
+        self.last_external_action_packet_lines = summarize_action_packets(self.pending_external_action_packets)
+        self.last_input_application_summary = self.action_bridge.apply_packets(self.state, self.pending_external_action_packets)
+        for key, value in self.last_input_application_summary.items():
+            self.cumulative_input_application_summary[key] += int(value)
+        self.pending_external_action_packets = []
 
     def _ai_stage(self) -> None:
         agent_indices = self.state.agent_indices()

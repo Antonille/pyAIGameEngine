@@ -27,7 +27,13 @@ def main() -> int:
     elif args.suite_group == "core":
         suite_ids = ["smoke_rigidbody_field_v1", "acceptance_gate_d_v1", "benchmark_headless_v1"]
     elif args.suite_group == "with_adapter":
-        suite_ids = ["smoke_rigidbody_field_v1", "acceptance_gate_d_v1", "benchmark_headless_v1", "adapter_rl_rollout_v1"]
+        suite_ids = [
+            "smoke_rigidbody_field_v1",
+            "acceptance_gate_d_v1",
+            "benchmark_headless_v1",
+            "adapter_rl_rollout_v1",
+            "determinism_replay_v1",
+        ]
     else:
         suite_ids = registry.all_suite_ids()
 
