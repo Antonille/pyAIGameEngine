@@ -4,7 +4,15 @@ param(
     [string]$ProjectRoot   = "C:\PythonDev\Dev1\pyGames\pyAIGameEngine",
     [switch]$PreferSparse,
     [switch]$PreferFull,
-    [switch]$ListOnly
+    [switch]$ListOnly,
+    [switch]$ConfigureGitIdentity,
+    [switch]$CommitAndPush,
+    [string]$GitHubUsername = "Antonille",
+    [string]$RepoName = "pyAIGameEngine",
+    [string]$GitUserEmail = "scott.antonille@gmail.com",
+    [string]$GitUserName = "Scott Antonille",
+    [string]$BranchName = "main",
+    [string]$CommitMessage = "Apply latest snapshot"
 )
 
 Set-StrictMode -Version Latest
@@ -34,38 +42,6 @@ function Get-LatestSnapshot {
     return $latest
 }
 
-function Test-LegacySparseRootLayout {
-    param([string]$Root)
-
-    $markers = @(
-        (Join-Path $Root 'pyproject.toml'),
-        (Join-Path $Root 'docs'),
-        (Join-Path $Root 'scripts'),
-        (Join-Path $Root 'POC1_SoaFirst')
-    )
-    $hits = ($markers | Where-Object { Test-Path -LiteralPath $_ }).Count
-    return ($hits -ge 2)
-}
-
-function New-NormalizedProjectFolder {
-    param([string]$TempRoot)
-
-    $normalizedRoot = Join-Path $TempRoot '__normalized_pyAIGameEngine'
-    New-Item -ItemType Directory -Path $normalizedRoot -Force | Out-Null
-
-    $wrapperNames = @('OPEN_THIS_FIRST.md', 'SNAPSHOT_INDEX.json')
-    $wrapperPatterns = @('*_contents.txt')
-
-    foreach ($item in Get-ChildItem -LiteralPath $TempRoot -Force) {
-        if ($item.Name -eq '__normalized_pyAIGameEngine') { continue }
-        if ($wrapperNames -contains $item.Name) { continue }
-        if ($wrapperPatterns | Where-Object { $item.Name -like $_ }) { continue }
-        Copy-Item -LiteralPath $item.FullName -Destination (Join-Path $normalizedRoot $item.Name) -Recurse -Force
-    }
-
-    return $normalizedRoot
-}
-
 function Expand-SnapshotToTemp {
     param([string]$ZipPath)
 
@@ -75,22 +51,32 @@ function Expand-SnapshotToTemp {
 
     $projectFolder = Join-Path $tempRoot 'pyAIGameEngine'
     if (Test-Path -LiteralPath $projectFolder) {
-        return @{ TempRoot = $tempRoot; ProjectFolder = $projectFolder; SnapshotLayout = 'standard-root-folder' }
+        return @{ TempRoot = $tempRoot; ProjectFolder = $projectFolder; SnapshotLayout = 'full-root-folder' }
+    }
+
+    $rootMarkers = @(
+        (Join-Path $tempRoot 'POC1_SoaFirst'),
+        (Join-Path $tempRoot 'docs'),
+        (Join-Path $tempRoot 'scripts'),
+        (Join-Path $tempRoot 'pyproject.toml'),
+        (Join-Path $tempRoot 'README.md'),
+        (Join-Path $tempRoot 'SNAPSHOT_INDEX.json')
+    )
+
+    $markerHits = ($rootMarkers | Where-Object { Test-Path -LiteralPath $_ }).Count
+    if ($markerHits -ge 2) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $tempRoot; SnapshotLayout = 'legacy-sparse-root-layout' }
     }
 
     $candidate = Get-ChildItem -Path $tempRoot -Directory -Recurse |
         Where-Object { $_.Name -eq 'pyAIGameEngine' } |
         Select-Object -First 1
+
     if ($candidate) {
-        return @{ TempRoot = $tempRoot; ProjectFolder = $candidate.FullName; SnapshotLayout = 'nested-root-folder' }
+        return @{ TempRoot = $tempRoot; ProjectFolder = $candidate.FullName; SnapshotLayout = 'nested-full-root-folder' }
     }
 
-    if (Test-LegacySparseRootLayout -Root $tempRoot) {
-        $normalizedRoot = New-NormalizedProjectFolder -TempRoot $tempRoot
-        return @{ TempRoot = $tempRoot; ProjectFolder = $normalizedRoot; SnapshotLayout = 'legacy-rootless-sparse' }
-    }
-
-    throw "Expanded snapshot is not recognized as a pyAIGameEngine snapshot: $ZipPath"
+    throw "Expanded snapshot is not recognized as a rooted or legacy sparse pyAIGameEngine snapshot: $ZipPath"
 }
 
 function Copy-Tree {
@@ -98,6 +84,81 @@ function Copy-Tree {
     robocopy $Source $Destination /E /R:1 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null
     $rc = $LASTEXITCODE
     if ($rc -ge 8) { throw "robocopy failed with exit code $rc" }
+}
+
+function Invoke-Git {
+    param(
+        [string[]]$Arguments,
+        [string]$WorkingDirectory
+    )
+
+    $output = & git @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+    if ($output) {
+        $output | ForEach-Object { Write-Host $_ }
+    }
+    if ($exitCode -ne 0) {
+        throw "git $($Arguments -join ' ') failed with exit code $exitCode"
+    }
+}
+
+function Update-GitRepo {
+    param(
+        [string]$RepoRoot,
+        [string]$GitHubUsername,
+        [string]$RepoName,
+        [string]$GitUserEmail,
+        [string]$GitUserName,
+        [string]$BranchName,
+        [string]$CommitMessage,
+        [bool]$ConfigureIdentity
+    )
+
+    if (-not (Test-Path -LiteralPath (Join-Path $RepoRoot '.git'))) {
+        throw "Project root is not a git repository: $RepoRoot"
+    }
+
+    $remoteUrl = "https://github.com/$GitHubUsername/$RepoName.git"
+    Write-Host "git_remote_url=$remoteUrl"
+
+    if ($ConfigureIdentity) {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.email',$GitUserEmail)
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.name',$GitUserName)
+        Write-Host "git_user_email=$GitUserEmail"
+        Write-Host "git_user_name=$GitUserName"
+    }
+
+    $hasOrigin = $true
+    try {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','get-url','origin') | Out-Null
+    } catch {
+        $hasOrigin = $false
+    }
+
+    if ($hasOrigin) {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','set-url','origin',$remoteUrl)
+    } else {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','add','origin',$remoteUrl)
+    }
+
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('branch','-M',$BranchName)
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('add','-A')
+
+    $statusLines = (& git -C $RepoRoot status --porcelain 2>&1)
+    $statusExitCode = $LASTEXITCODE
+    if ($statusExitCode -ne 0) {
+        throw "git status --porcelain failed with exit code $statusExitCode"
+    }
+
+    if ($statusLines) {
+        Write-Host 'git_changes_detected=true'
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('commit','-m',$CommitMessage)
+    } else {
+        Write-Host 'git_changes_detected=false'
+        Write-Host 'No tracked or staged changes detected after snapshot apply. Skipping commit.'
+    }
+
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('push','-u','origin',$BranchName)
 }
 
 $latest = Get-LatestSnapshot -Root $SnapshotsRoot -WantSparse:$PreferSparse.IsPresent -WantFull:$PreferFull.IsPresent
@@ -112,6 +173,18 @@ Write-Host "snapshot_layout=$($expanded.SnapshotLayout)"
 try {
     Copy-Tree -Source $expanded.ProjectFolder -Destination $ProjectRoot
     Write-Host "applied_snapshot_to=$ProjectRoot"
+
+    if ($CommitAndPush) {
+        Update-GitRepo `
+            -RepoRoot $ProjectRoot `
+            -GitHubUsername $GitHubUsername `
+            -RepoName $RepoName `
+            -GitUserEmail $GitUserEmail `
+            -GitUserName $GitUserName `
+            -BranchName $BranchName `
+            -CommitMessage $CommitMessage `
+            -ConfigureIdentity:$ConfigureGitIdentity.IsPresent
+    }
 } finally {
     if (Test-Path -LiteralPath $expanded.TempRoot) {
         Remove-Item -LiteralPath $expanded.TempRoot -Recurse -Force -ErrorAction SilentlyContinue
