@@ -1,0 +1,29 @@
+README_APPLY_FIRST.md
+docs/2026 03 30 REV2.3 pyAIGameEngine Project Instructions.md
+docs/2026 03 30 REV4.2 AI Interface Control.md
+docs/2026 03 30 REV4.2 AI-RL Integration Strategy.md
+docs/2026 03 30 REV4.2 Current Next-Step Prompts.md
+docs/2026 03 30 REV4.2 Current Workflow.md
+docs/2026 03 30 REV4.2 GitHub and Snapshot Workflow.md
+docs/2026 03 30 REV4.2 Lessons Learned.md
+docs/2026 03 30 REV4.2 Minimal Env Adapter Refit Plan.md
+docs/2026 03 30 REV4.2 Model Interface Control.md
+docs/2026 03 30 REV4.2 Optimized Prompts and Templates.md
+docs/2026 03 30 REV4.2 Project Resource Guide.md
+docs/2026 03 30 REV4.2 Reset Determinism Replay Mini-Spec.md
+docs/2026 03 30 REV4.2 Testing and Reporting System Implementation Status.md
+docs/2026 03 30 REV4.2 Timing and Profiling Contract.md
+docs/CURRENT_AI_INTERFACE_CONTROL.md
+docs/CURRENT_AI_RL_INTEGRATION_STRATEGY.md
+docs/CURRENT_ENV_ADAPTER_REFIT_PLAN.md
+docs/CURRENT_GITHUB_WORKFLOW.md
+docs/CURRENT_LESSONS_LEARNED.md
+docs/CURRENT_MODEL_INTERFACE_CONTROL.md
+docs/CURRENT_NEXT_STEP_PROMPTS.md
+docs/CURRENT_OPTIMIZED_PROMPTS_AND_TEMPLATES.md
+docs/CURRENT_PROJECT_INSTRUCTIONS.md
+docs/CURRENT_PROJECT_RESOURCE_GUIDE.md
+docs/CURRENT_RESET_DETERMINISM_REPLAY_SPEC.md
+docs/CURRENT_TESTING_AND_REPORTING_SYSTEM.md
+docs/CURRENT_TIMING_AND_PROFILING_CONTRACT.md
+docs/CURRENT_WORKFLOW.md

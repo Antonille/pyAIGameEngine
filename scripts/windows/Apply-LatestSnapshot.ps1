@@ -92,51 +92,13 @@ function Invoke-Git {
         [string]$WorkingDirectory
     )
 
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = 'git'
-    $psi.WorkingDirectory = $WorkingDirectory
-    $psi.UseShellExecute = $false
-    $psi.RedirectStandardOutput = $true
-    $psi.RedirectStandardError = $true
-    $quotedArgs = @()
-    foreach ($arg in $Arguments) {
-        if ($null -eq $arg) { $arg = '' }
-        $escaped = $arg.Replace('"', '\"')
-        if ($escaped -match '[\s"]') {
-            $quotedArgs += ('"' + $escaped + '"')
-        } else {
-            $quotedArgs += $escaped
-        }
+    $output = & git @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+    if ($output) {
+        $output | ForEach-Object { Write-Host $_ }
     }
-    $psi.Arguments = ($quotedArgs -join ' ')
-
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = $psi
-
-    [void]$process.Start()
-    $stdout = $process.StandardOutput.ReadToEnd()
-    $stderr = $process.StandardError.ReadToEnd()
-    $process.WaitForExit()
-
-    if ($stdout) {
-        $stdout.TrimEnd("`r", "`n").Split([Environment]::NewLine) | ForEach-Object {
-            if ($_ -ne '') { Write-Host $_ }
-        }
-    }
-    if ($stderr) {
-        $stderr.TrimEnd("`r", "`n").Split([Environment]::NewLine) | ForEach-Object {
-            if ($_ -ne '') { Write-Warning $_ }
-        }
-    }
-
-    if ($process.ExitCode -ne 0) {
-        throw "git $($Arguments -join ' ') failed with exit code $($process.ExitCode)"
-    }
-
-    return @{
-        StdOut = $stdout
-        StdErr = $stderr
-        ExitCode = $process.ExitCode
+    if ($exitCode -ne 0) {
+        throw "git $($Arguments -join ' ') failed with exit code $exitCode"
     }
 }
 
@@ -160,8 +122,8 @@ function Update-GitRepo {
     Write-Host "git_remote_url=$remoteUrl"
 
     if ($ConfigureIdentity) {
-        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.email',$GitUserEmail) | Out-Null
-        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.name',$GitUserName) | Out-Null
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.email',$GitUserEmail)
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.name',$GitUserName)
         Write-Host "git_user_email=$GitUserEmail"
         Write-Host "git_user_name=$GitUserName"
     }
@@ -174,34 +136,29 @@ function Update-GitRepo {
     }
 
     if ($hasOrigin) {
-        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','set-url','origin',$remoteUrl) | Out-Null
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','set-url','origin',$remoteUrl)
     } else {
-        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','add','origin',$remoteUrl) | Out-Null
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','add','origin',$remoteUrl)
     }
 
-    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('branch','-M',$BranchName) | Out-Null
-    Write-Host 'git_staging_mode=all_changes'
-    Write-Host 'git_staging_note=staging new files, modified files, and deletions via git add -A'
-    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('add','-A') | Out-Null
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('branch','-M',$BranchName)
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('add','-A')
 
-    $statusResult = Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('status','--porcelain')
-    $statusLines = @()
-    if ($statusResult.StdOut) {
-        $statusLines = $statusResult.StdOut.TrimEnd("`r", "`n").Split([Environment]::NewLine) | Where-Object { $_ -ne '' }
+    $statusLines = (& git -C $RepoRoot status --porcelain 2>&1)
+    $statusExitCode = $LASTEXITCODE
+    if ($statusExitCode -ne 0) {
+        throw "git status --porcelain failed with exit code $statusExitCode"
     }
 
-    if ($statusLines.Count -gt 0) {
+    if ($statusLines) {
         Write-Host 'git_changes_detected=true'
-        Write-Host 'git_status_short_begin'
-        $statusLines | ForEach-Object { Write-Host $_ }
-        Write-Host 'git_status_short_end'
-        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('commit','-m',$CommitMessage) | Out-Null
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('commit','-m',$CommitMessage)
     } else {
         Write-Host 'git_changes_detected=false'
         Write-Host 'No tracked or staged changes detected after snapshot apply. Skipping commit.'
     }
 
-    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('push','-u','origin',$BranchName) | Out-Null
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('push','-u','origin',$BranchName)
 }
 
 $latest = Get-LatestSnapshot -Root $SnapshotsRoot -WantSparse:$PreferSparse.IsPresent -WantFull:$PreferFull.IsPresent

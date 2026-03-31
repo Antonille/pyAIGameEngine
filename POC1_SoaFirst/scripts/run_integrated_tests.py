@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from poc1_engine.testing.cli_logging import configure_console_tee
 from poc1_engine.testing.harness import HarnessConfig, IntegratedTestHarness
 from poc1_engine.testing.suites import build_default_registry
 
@@ -18,7 +19,10 @@ def main() -> int:
     parser.add_argument("--suite-id", action="append", default=[])
     parser.add_argument("--snapshot-id", default="candidate_snapshot")
     parser.add_argument("--note", default=None)
+    parser.add_argument("--console-log-path", default=None)
     args = parser.parse_args()
+
+    configure_console_tee(args.console_log_path)
 
     poc_root = Path(__file__).resolve().parents[1]
     registry = build_default_registry()
@@ -51,7 +55,9 @@ def main() -> int:
     harness = IntegratedTestHarness(config=config, registry=registry)
     record = harness.run()
 
+    run_output_dir = poc_root / "artifacts" / "test" / "generated" / "runs" / record.run_id
     print(f"run_id={record.run_id}")
+    print(f"run_output_dir={run_output_dir}")
     print(f"archive_path={harness.archive_path}")
     print(f"current_report_markdown={poc_root / 'reports' / 'current' / 'current_test_report.md'}")
     print(f"current_report_html={poc_root / 'reports' / 'current' / 'current_test_report.html'}")
@@ -59,6 +65,8 @@ def main() -> int:
     print(f"checks_passed={record.validation_summary.get('checks_passed')}")
     print(f"checks_failed={record.validation_summary.get('checks_failed')}")
     print(f"checks_skipped={record.validation_summary.get('checks_skipped')}")
+    for artifact in record.artifact_references:
+        print(f"artifact_path={poc_root / Path(artifact.relative_path)}")
     if record.performance_summary.get('primary_metric_ms_per_step') is not None:
         print(f"primary_ms_per_step={record.performance_summary['primary_metric_ms_per_step']:.6f}")
         print(f"normalized_ms_per_full_complexity={record.projection_summary.get('normalized_ms_per_full_complexity')}")

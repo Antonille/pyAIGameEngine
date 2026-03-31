@@ -4,6 +4,7 @@ import argparse
 import json
 
 from poc1_engine.testing.capture import capture_fixed_action_replay_validation
+from poc1_engine.testing.cli_logging import configure_console_tee
 
 
 def main() -> int:
@@ -12,7 +13,10 @@ def main() -> int:
     parser.add_argument("--backend-mode", choices=["numpy", "numba"], default="numpy")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--action-seed", type=int, default=99)
+    parser.add_argument("--console-log-path", default=None)
     args = parser.parse_args()
+
+    configure_console_tee(args.console_log_path)
 
     payload = capture_fixed_action_replay_validation(
         steps=args.steps,
