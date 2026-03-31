@@ -1,7 +1,7 @@
 # docs archive index
 
 ## Purpose
-This index explains where superseded material was moved during the REV4.5 cleanup/consolidation pass.
+This index explains where superseded material was moved during the REV4.5 cleanup/consolidation pass and why the active surface remains intentionally small.
 
 ## Archive layout
 - `archive/legacy_current_folder/` — old duplicated `docs/current/` surface that conflicted with `CURRENT_*` pointers
@@ -26,3 +26,4 @@ The docs root should now hold only:
 
 ## Note
 Archive placement is meant to reduce restart confusion, not to erase history.
+It also reduces the chance that stale docs, stale path aliases, or stale process instructions contaminate the next pass.
