@@ -92,7 +92,7 @@ function Invoke-Git {
         [string]$WorkingDirectory
     )
 
-    $output = & git @Arguments 2>&1
+    $output = & git -C $WorkingDirectory @Arguments 2>&1
     $exitCode = $LASTEXITCODE
     if ($output) {
         $output | ForEach-Object { Write-Host $_ }
@@ -100,6 +100,17 @@ function Invoke-Git {
     if ($exitCode -ne 0) {
         throw "git $($Arguments -join ' ') failed with exit code $exitCode"
     }
+}
+
+function Get-GitStatusLines {
+    param([string]$RepoRoot)
+
+    $statusLines = & git -C $RepoRoot status --short 2>&1
+    $statusExitCode = $LASTEXITCODE
+    if ($statusExitCode -ne 0) {
+        throw "git status --short failed with exit code $statusExitCode"
+    }
+    return @($statusLines)
 }
 
 function Update-GitRepo {
@@ -142,20 +153,21 @@ function Update-GitRepo {
     }
 
     Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('branch','-M',$BranchName)
+
+    Write-Host 'git_staging_mode=all_changes'
+    Write-Host 'git_staging_note=staging new files, modified files, and deletions via git add -A'
     Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('add','-A')
 
-    $statusLines = (& git -C $RepoRoot status --porcelain 2>&1)
-    $statusExitCode = $LASTEXITCODE
-    if ($statusExitCode -ne 0) {
-        throw "git status --porcelain failed with exit code $statusExitCode"
-    }
-
-    if ($statusLines) {
+    $statusLines = Get-GitStatusLines -RepoRoot $RepoRoot
+    if ($statusLines.Count -gt 0) {
         Write-Host 'git_changes_detected=true'
+        Write-Host 'git_status_short_begin'
+        $statusLines | ForEach-Object { Write-Host $_ }
+        Write-Host 'git_status_short_end'
         Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('commit','-m',$CommitMessage)
     } else {
         Write-Host 'git_changes_detected=false'
-        Write-Host 'No tracked or staged changes detected after snapshot apply. Skipping commit.'
+        Write-Host 'No tracked, modified, or newly added files detected after snapshot apply. Skipping commit.'
     }
 
     Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('push','-u','origin',$BranchName)
