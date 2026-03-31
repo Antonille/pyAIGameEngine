@@ -17,6 +17,7 @@ Historical revision series belong under `docs/archive/`.
 - `CURRENT_LESSON_ACTION_REGISTER.md`
 - `CURRENT_NEXT_STEP_PROMPTS.md`
 - `CURRENT_ACTIVE_FILE_PATHS.md`
+- `CURRENT_TEST_REPORT_PROCEDURE.md`
 
 ## Contamination-control note
 The active docs now explicitly document:
@@ -24,3 +25,8 @@ The active docs now explicitly document:
 - repo-truth vs snapshot-truth usage
 - line-ending policy expectations
 - artifact-first file delivery for durable repo content
+
+## Testing/reporting note
+When a pass is primarily about validation analysis, report generation, or report-surface cleanup, treat
+`CURRENT_TEST_REPORT_PROCEDURE.md` as an active named procedure rather than relying only on older prompt text or
+memory.
