@@ -1,9 +1,10 @@
-Revision: **0.1.2**
+Revision: **0.1.3**
 
 # POC1 — SoA First Fallback Path
 
 **Descriptive name:** *POC1_SoaFirst*  
-**Goal:** Establish a high-performance-friendly architecture baseline using SoA runtime state, explicit plank-tic stages, fallback-first execution, benchmark/rollout/viewer paths, and performance exploration without blocking on native physics.
+**Goal:** Establish a performance-friendly architecture baseline using SoA runtime state, explicit plank-tic stages,
+fallback-first execution, benchmark/rollout/viewer paths, and AI/RL boundary hardening without blocking on native physics.
 
 ## Current validated path
 - **Default backend:** simple integrator
@@ -24,6 +25,8 @@ Revision: **0.1.2**
   - `FallbackPolicy`
   - `AIScheduler`
 - NumPy vs Numba comparison tooling
+- integrated testing/archive/report generation path
+- deterministic replay check entry point
 
 ## Install (editable)
 From repo root:
@@ -36,7 +39,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\windows\install_project.ps1
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\windowsun_poc1_validation.ps1 -BackendMode numpy
 powershell -ExecutionPolicy Bypass -File .\scripts\windowsun_poc1_validation.ps1 -BackendMode numba
+powershell -ExecutionPolicy Bypass -File .\scripts\windowsun_poc1_integrated_tests.ps1
 ```
+
+## Artifact/report policy
+- `artifacts/test/archive/` and `artifacts/test/generated/runs/` hold durable history and run-linked artifacts.
+- `reports/current/` holds the latest human-readable regenerated report surface and can be refreshed from durable data.
 
 ## Focus
 This POC remains isolated until components have clear promotion criteria into shared engine layers.

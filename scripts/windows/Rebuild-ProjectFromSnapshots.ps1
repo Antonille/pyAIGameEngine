@@ -1,81 +1,125 @@
 [CmdletBinding()]
 param(
-    [string]$SnapshotsRoot,
-    [string]$ProjectRoot,
-    [string]$ScriptsRoot,
+    [string]$SnapshotsRoot = "C:\PythonDev\Dev1\pyGames\Revs_pyAIGameEngine",
+    [string]$ProjectRoot   = "C:\PythonDev\Dev1\pyGames\pyAIGameEngine",
     [switch]$ClearProject,
-    [switch]$AllowDirtyRepo,
-    [switch]$ConfigureGitIdentity,
-    [switch]$CommitAndPush,
-    [switch]$SetRemoteUrl,
-    [string]$GitHubUsername,
-    [string]$RepoName,
-    [string]$GitUserEmail,
-    [string]$GitUserName,
-    [string]$BranchName,
-    [string]$CommitMessage = 'Rebuild project from snapshots',
-    [string[]]$PreserveTopLevel = @('.git','.venv')
+    [string[]]$PreserveTopLevel = @('.venv', '.git', 'scripts')
 )
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $here 'pyAIGameEngine.Common.ps1')
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
 
-$context = Resolve-ProjectContext -ProjectRoot $ProjectRoot -ScriptsRoot $ScriptsRoot -RevisionsRoot $SnapshotsRoot -GitHubUsername $GitHubUsername -RepoName $RepoName -GitUserEmail $GitUserEmail -GitUserName $GitUserName -BranchName $BranchName
+function Get-SnapshotKind([string]$Name) {
+    $n = $Name.ToLowerInvariant()
+    if ($n -match 'full_snapshot' -or $n -match 'candidate_full_snapshot') { return 'full' }
+    if ($n -match 'sparse_snapshot' -or $n -match 'candidate_sparse_snapshot') { return 'sparse' }
+    return 'unknown'
+}
 
-Write-Info ('runtime=' + $context.Runtime)
-Write-Info ('project_root=' + $context.ProjectRoot)
-Write-Info ('scripts_root=' + $context.ScriptsRoot)
-Write-Info ('snapshots_root=' + $context.RevisionsRoot)
+function Test-LegacySparseRootLayout {
+    param([string]$Root)
 
-if ((Test-Path -LiteralPath (Join-Path $context.ProjectRoot '.git'))) {
-    if ((-not $AllowDirtyRepo) -and (Test-GitRepoDirty -RepoRoot $context.ProjectRoot)) {
-        throw 'Git working tree is dirty. Commit/stash changes first or rerun with -AllowDirtyRepo.'
+    $markers = @(
+        (Join-Path $Root 'pyproject.toml'),
+        (Join-Path $Root 'docs'),
+        (Join-Path $Root 'scripts'),
+        (Join-Path $Root 'POC1_SoaFirst')
+    )
+    $hits = ($markers | Where-Object { Test-Path -LiteralPath $_ }).Count
+    return ($hits -ge 2)
+}
+
+function New-NormalizedProjectFolder {
+    param([string]$TempRoot)
+
+    $normalizedRoot = Join-Path $TempRoot '__normalized_pyAIGameEngine'
+    New-Item -ItemType Directory -Path $normalizedRoot -Force | Out-Null
+
+    $wrapperNames = @('OPEN_THIS_FIRST.md', 'SNAPSHOT_INDEX.json')
+    $wrapperPatterns = @('*_contents.txt')
+
+    foreach ($item in Get-ChildItem -LiteralPath $TempRoot -Force) {
+        if ($item.Name -eq '__normalized_pyAIGameEngine') { continue }
+        if ($wrapperNames -contains $item.Name) { continue }
+        if ($wrapperPatterns | Where-Object { $item.Name -like $_ }) { continue }
+        Copy-Item -LiteralPath $item.FullName -Destination (Join-Path $normalizedRoot $item.Name) -Recurse -Force
+    }
+
+    return $normalizedRoot
+}
+
+function Expand-SnapshotToTemp {
+    param([string]$ZipPath)
+
+    $tempRoot = Join-Path $env:TEMP ("pyAIGameEngine_rebuild_" + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $tempRoot | Out-Null
+    Expand-Archive -Path $ZipPath -DestinationPath $tempRoot -Force
+
+    $projectFolder = Join-Path $tempRoot 'pyAIGameEngine'
+    if (Test-Path -LiteralPath $projectFolder) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $projectFolder; SnapshotLayout = 'standard-root-folder' }
+    }
+
+    $candidate = Get-ChildItem -Path $tempRoot -Directory -Recurse |
+        Where-Object { $_.Name -eq 'pyAIGameEngine' } |
+        Select-Object -First 1
+    if ($candidate) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $candidate.FullName; SnapshotLayout = 'nested-root-folder' }
+    }
+
+    if (Test-LegacySparseRootLayout -Root $tempRoot) {
+        $normalizedRoot = New-NormalizedProjectFolder -TempRoot $tempRoot
+        return @{ TempRoot = $tempRoot; ProjectFolder = $normalizedRoot; SnapshotLayout = 'legacy-rootless-sparse' }
+    }
+
+    throw "Expanded snapshot is not recognized as a pyAIGameEngine snapshot: $ZipPath"
+}
+
+function Copy-Tree {
+    param([string]$Source,[string]$Destination)
+    robocopy $Source $Destination /E /R:1 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null
+    $rc = $LASTEXITCODE
+    if ($rc -ge 8) { throw "robocopy failed with exit code $rc" }
+}
+
+function Clear-ProjectSafe {
+    param([string]$Root,[string[]]$Preserve)
+    foreach ($item in Get-ChildItem -LiteralPath $Root -Force) {
+        if ($Preserve -contains $item.Name) {
+            Write-Host "preserve=$($item.FullName)"
+            continue
+        }
+        Remove-Item -LiteralPath $item.FullName -Recurse -Force
+        Write-Host "removed=$($item.FullName)"
     }
 }
 
-$inventory = Get-SnapshotInventory -Root $context.RevisionsRoot
-$inventory = $inventory | Where-Object { $_.Kind -ne 'utility' }
-if (-not $inventory) { throw ('No snapshot zip files found in ' + $context.RevisionsRoot) }
+$zips = Get-ChildItem -Path $SnapshotsRoot -File -Filter *.zip | Sort-Object LastWriteTimeUtc
+if (-not $zips) { throw "No zip snapshots found in $SnapshotsRoot" }
+$full = $zips | Where-Object { (Get-SnapshotKind $_.Name) -eq 'full' } | Select-Object -Last 1
+if (-not $full) { throw "No full snapshot found in $SnapshotsRoot" }
+$sparse = $zips | Where-Object { $_.LastWriteTimeUtc -gt $full.LastWriteTimeUtc -and (Get-SnapshotKind $_.Name) -eq 'sparse' } | Sort-Object LastWriteTimeUtc
 
-$full = $inventory | Where-Object { $_.Kind -eq 'full' } | Sort-Object TimestampUtc, Revision, Name | Select-Object -Last 1
-if (-not $full) { throw ('No full snapshot found in ' + $context.RevisionsRoot) }
-
-$incrementals = $inventory | Where-Object {
-    ($_.Kind -eq 'sparse' -or $_.Kind -eq 'patch') -and $_.TimestampUtc -gt $full.TimestampUtc
-} | Sort-Object TimestampUtc, Revision, Name
-
-Write-Info ('full_snapshot=' + $full.FullName)
-Write-Info ('full_snapshot_timestamp_utc=' + $full.TimestampUtc.ToString('o'))
-Write-Info ('incremental_count=' + ($incrementals | Measure-Object).Count)
-foreach ($entry in $incrementals) {
-    Write-Info ('apply_incremental=' + $entry.Name)
-}
+Write-Host "full_snapshot=$($full.FullName)"
+Write-Host "full_snapshot_lastwrite=$($full.LastWriteTime)"
+Write-Host "sparse_count=$($sparse.Count)"
+foreach ($s in $sparse) { Write-Host "apply_sparse=$($s.Name)" }
 
 if ($ClearProject) {
-    Clear-ProjectKeep -ProjectRoot $context.ProjectRoot -PreserveTopLevel $PreserveTopLevel
+    Clear-ProjectSafe -Root $ProjectRoot -Preserve $PreserveTopLevel
 }
 
-$allToApply = @($full) + @($incrementals)
-foreach ($record in $allToApply) {
-    $expanded = Expand-SnapshotToTemp -ZipPath $record.FullName -TempPrefix 'pyAIGameEngine_rebuild'
-    Write-Info ('snapshot_layout[' + $record.Name + ']=' + $expanded.SnapshotLayout)
+$allToApply = @($full) + @($sparse)
+foreach ($zip in $allToApply) {
+    $expanded = Expand-SnapshotToTemp -ZipPath $zip.FullName
+    Write-Host "snapshot_layout[$($zip.Name)]=$($expanded.SnapshotLayout)"
     try {
-        Invoke-RobocopyDirectory -Source $expanded.ProjectFolder -Destination $context.ProjectRoot
-        Write-Info ('applied=' + $record.Name)
+        Copy-Tree -Source $expanded.ProjectFolder -Destination $ProjectRoot
+        Write-Host "applied=$($zip.Name)"
     } finally {
-        if ($expanded -and $expanded.TempRoot -and (Test-Path -LiteralPath $expanded.TempRoot)) {
+        if (Test-Path -LiteralPath $expanded.TempRoot) {
             Remove-Item -LiteralPath $expanded.TempRoot -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
 }
-
-if ($ConfigureGitIdentity -and -not $CommitAndPush) {
-    Ensure-GitIdentityAndRemote -RepoRoot $context.ProjectRoot -GitHubUsername $context.GitHubUsername -RepoName $context.RepoName -GitUserEmail $context.GitUserEmail -GitUserName $context.GitUserName -BranchName $context.BranchName -SetRemoteUrl:$SetRemoteUrl.IsPresent
-}
-
-if ($CommitAndPush) {
-    Ensure-GitIdentityAndRemote -RepoRoot $context.ProjectRoot -GitHubUsername $context.GitHubUsername -RepoName $context.RepoName -GitUserEmail $context.GitUserEmail -GitUserName $context.GitUserName -BranchName $context.BranchName -SetRemoteUrl:$SetRemoteUrl.IsPresent
-    Commit-AndPushIfChanged -RepoRoot $context.ProjectRoot -BranchName $context.BranchName -CommitMessage $CommitMessage
-}
-
-Write-Info ('rebuild_complete=' + $context.ProjectRoot)
+Write-Host "rebuild_complete=$ProjectRoot"

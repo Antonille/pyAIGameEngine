@@ -1,44 +1,38 @@
 # pyAIGameEngine
 
-Revision: **0.0.10**  
-Snapshot date: **2026-03-29**
+Revision: **0.0.23**  
+Snapshot date: **2026-03-30**
 
-pyAIGameEngine is a Python hybrid game engine / physics simulation engine project with modular AI components. The current phase is early architecture definition, field/runtime-schema planning, AI scheduling architecture work, and Proof of Concept 1 (**POC1_SoaFirst**) implementation/performance exploration.
+pyAIGameEngine is a Python hybrid game engine / physics simulation engine project with modular AI components.
+The current emphasis is fallback-first simulation correctness, AI/RL boundary hardening, reproducible testing/reporting,
+and a cleaner GitHub-first workflow that reduces repo-truth drift.
 
 ## Current status
-- Active proof of concept: **POC1_SoaFirst**
-- Python baseline: **single Python 3.12 `.venv`**
-- Active validated runtime path: **fallback-first CPU path**
-- Native physics: **PyBullet optional / deferred**
-- POC1 currently includes:
-  - explicit plank-tic stage loop
-  - SoA runtime state buffers
-  - event buffer and event queries
-  - agent-subset observation building
-  - simple integrator backend with **NumPy / Numba** runtime modes
-  - benchmark, rollout, viewer
-  - per-stage timing/profiling
-  - render visibility selection / snapshot-culling precursor
-  - first AI scheduling prototype structures
-- Current architecture direction also includes:
-  - fixed runtime schemas and feature-pack plans for repeated object families
-  - AI scheduling by model family, cadence, freshness, and fallback policy
-  - new coordinate-system / gravity / field / property architecture spec and runtime-schema/field-payload prototype plan
-
-## Repository layout
-- `docs/` — project-wide specs, workflow, status, prompts, lessons learned, manifests, current-truth guides
-- `POC1_SoaFirst/` — isolated proof-of-concept package and docs
-- `scripts/` — root-level install, repo, snapshot, validation, and packaging scripts
-- `tools/` — helper utilities and placeholders for cross-POC tooling
-- `pocs/` — proof-of-concept index and future shared promotion notes
+- Active proof of concept: `POC1_SoaFirst`
+- Python baseline: single Python 3.12 `.venv`
+- Active validated runtime path: fallback-first CPU path
+- Native physics: PyBullet optional / deferred
+- Current workflow overlays:
+  - lesson-action register
+  - truth-tier discipline (`repo-truth` vs `snapshot-truth` vs `supporting local evidence`)
+  - current-pointer freshness audit
+  - full+sparse reconciliation audit before authoritative full snapshots
 
 ## Start here
-1. Read `docs/CURRENT_PROJECT_RESOURCE_GUIDE.md`
-2. Read `docs/CURRENT_PROJECT_INSTRUCTIONS.md`
-3. Run `scripts/windows/install_project.ps1`
-4. Validate POC1 with `scripts/windows/run_poc1_validation.ps1 -BackendMode numpy`
-5. Use `docs/CURRENT_NEXT_STEP_PROMPTS.md` for ready-to-paste next prompts
+1. Read `docs/README.md`
+2. Read `docs/CURRENT_PROJECT_RESOURCE_GUIDE.md`
+3. Read `docs/CURRENT_WORKFLOW.md`
+4. Read `docs/CURRENT_NEXT_STEP_PROMPTS.md`
+5. Read `POC1_SoaFirst/README.md`
 
+## Repository layout
+- `docs/` — current pointers, active docs, archive index, and curated history
+- `docs/archive/` — archived revision series and legacy folders consolidated out of the active surface
+- `POC1_SoaFirst/` — isolated proof-of-concept package, reports, durable test artifacts, and source
+- `scripts/` — install, validation, snapshot, and repo-maintenance helpers
+- `tools/` — helper utilities and placeholders for shared tooling promotion
+- `pocs/` — cross-POC index / planning space
 
-## Current primary architecture spec
-- `docs/2026 03 29 REV1.5 Rigid-Body, Field, and Runtime-Schema Implementation Spec.md`
+## Repo-truth note
+This cleaned full snapshot is intended to become the new GitHub truth after review and commit.
+If GitHub main currently lags behind this package, treat this snapshot as the bounded `snapshot-truth` to be promoted back into the repo.

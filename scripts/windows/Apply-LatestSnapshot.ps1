@@ -1,103 +1,192 @@
 [CmdletBinding()]
 param(
-    [string]$SnapshotsRoot,
-    [string]$ProjectRoot,
-    [string]$ScriptsRoot,
-    [ValidateSet('any','full','sparse','patch')]
-    [string]$SnapshotKind = 'any',
-    [ValidateSet('Overlay','Replace')]
-    [string]$SyncMode = 'Overlay',
-    [string]$ZipPath,
+    [string]$SnapshotsRoot = "C:\PythonDev\Dev1\pyGames\Revs_pyAIGameEngine",
+    [string]$ProjectRoot   = "C:\PythonDev\Dev1\pyGames\pyAIGameEngine",
     [switch]$PreferSparse,
     [switch]$PreferFull,
     [switch]$ListOnly,
-    [switch]$AllowDirtyRepo,
     [switch]$ConfigureGitIdentity,
     [switch]$CommitAndPush,
-    [switch]$SetRemoteUrl,
-    [string]$GitHubUsername,
-    [string]$RepoName,
-    [string]$GitUserEmail,
-    [string]$GitUserName,
-    [string]$BranchName,
-    [string]$CommitMessage = 'Apply latest snapshot',
-    [string[]]$PreserveTopLevel = @('.git','.venv')
+    [string]$GitHubUsername = "Antonille",
+    [string]$RepoName = "pyAIGameEngine",
+    [string]$GitUserEmail = "scott.antonille@gmail.com",
+    [string]$GitUserName = "Scott Antonille",
+    [string]$BranchName = "main",
+    [string]$CommitMessage = "Apply latest snapshot"
 )
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $here 'pyAIGameEngine.Common.ps1')
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
 
-if ($PreferSparse) { $SnapshotKind = 'sparse' }
-if ($PreferFull) { $SnapshotKind = 'full' }
+function Get-SnapshotKind([string]$Name) {
+    $n = $Name.ToLowerInvariant()
+    if ($n -match 'full_snapshot' -or $n -match 'candidate_full_snapshot') { return 'full' }
+    if ($n -match 'sparse_snapshot' -or $n -match 'candidate_sparse_snapshot') { return 'sparse' }
+    return 'unknown'
+}
 
-$context = Resolve-ProjectContext -ProjectRoot $ProjectRoot -ScriptsRoot $ScriptsRoot -RevisionsRoot $SnapshotsRoot -GitHubUsername $GitHubUsername -RepoName $RepoName -GitUserEmail $GitUserEmail -GitUserName $GitUserName -BranchName $BranchName
+function Get-LatestSnapshot {
+    param([string]$Root,[bool]$WantSparse,[bool]$WantFull)
 
-Write-Info ('runtime=' + $context.Runtime)
-Write-Info ('project_root=' + $context.ProjectRoot)
-Write-Info ('scripts_root=' + $context.ScriptsRoot)
-Write-Info ('snapshots_root=' + $context.RevisionsRoot)
-Write-Info ('sync_mode=' + $SyncMode)
+    $items = Get-ChildItem -Path $Root -File -Filter *.zip | Sort-Object LastWriteTimeUtc
+    if (-not $items) { throw "No zip snapshots found in $Root" }
 
-if ((Test-Path -LiteralPath (Join-Path $context.ProjectRoot '.git'))) {
-    if ((-not $AllowDirtyRepo) -and (Test-GitRepoDirty -RepoRoot $context.ProjectRoot)) {
-        throw 'Git working tree is dirty. Commit/stash changes first or rerun with -AllowDirtyRepo.'
+    if ($WantSparse -and -not $WantFull) {
+        $items = $items | Where-Object { (Get-SnapshotKind $_.Name) -eq 'sparse' }
+    } elseif ($WantFull -and -not $WantSparse) {
+        $items = $items | Where-Object { (Get-SnapshotKind $_.Name) -eq 'full' }
+    }
+
+    $latest = $items | Sort-Object LastWriteTimeUtc | Select-Object -Last 1
+    if (-not $latest) { throw "No matching snapshot found in $Root" }
+    return $latest
+}
+
+function Expand-SnapshotToTemp {
+    param([string]$ZipPath)
+
+    $tempRoot = Join-Path $env:TEMP ("pyAIGameEngine_apply_" + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $tempRoot | Out-Null
+    Expand-Archive -Path $ZipPath -DestinationPath $tempRoot -Force
+
+    $projectFolder = Join-Path $tempRoot 'pyAIGameEngine'
+    if (Test-Path -LiteralPath $projectFolder) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $projectFolder; SnapshotLayout = 'full-root-folder' }
+    }
+
+    $rootMarkers = @(
+        (Join-Path $tempRoot 'POC1_SoaFirst'),
+        (Join-Path $tempRoot 'docs'),
+        (Join-Path $tempRoot 'scripts'),
+        (Join-Path $tempRoot 'pyproject.toml'),
+        (Join-Path $tempRoot 'README.md'),
+        (Join-Path $tempRoot 'SNAPSHOT_INDEX.json')
+    )
+
+    $markerHits = ($rootMarkers | Where-Object { Test-Path -LiteralPath $_ }).Count
+    if ($markerHits -ge 2) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $tempRoot; SnapshotLayout = 'legacy-sparse-root-layout' }
+    }
+
+    $candidate = Get-ChildItem -Path $tempRoot -Directory -Recurse |
+        Where-Object { $_.Name -eq 'pyAIGameEngine' } |
+        Select-Object -First 1
+
+    if ($candidate) {
+        return @{ TempRoot = $tempRoot; ProjectFolder = $candidate.FullName; SnapshotLayout = 'nested-full-root-folder' }
+    }
+
+    throw "Expanded snapshot is not recognized as a rooted or legacy sparse pyAIGameEngine snapshot: $ZipPath"
+}
+
+function Copy-Tree {
+    param([string]$Source,[string]$Destination)
+    robocopy $Source $Destination /E /R:1 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null
+    $rc = $LASTEXITCODE
+    if ($rc -ge 8) { throw "robocopy failed with exit code $rc" }
+}
+
+function Invoke-Git {
+    param(
+        [string[]]$Arguments,
+        [string]$WorkingDirectory
+    )
+
+    $output = & git @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+    if ($output) {
+        $output | ForEach-Object { Write-Host $_ }
+    }
+    if ($exitCode -ne 0) {
+        throw "git $($Arguments -join ' ') failed with exit code $exitCode"
     }
 }
 
-$inventory = Get-SnapshotInventory -Root $context.RevisionsRoot
-if (-not $inventory) { throw ('No snapshot zip files found in ' + $context.RevisionsRoot) }
+function Update-GitRepo {
+    param(
+        [string]$RepoRoot,
+        [string]$GitHubUsername,
+        [string]$RepoName,
+        [string]$GitUserEmail,
+        [string]$GitUserName,
+        [string]$BranchName,
+        [string]$CommitMessage,
+        [bool]$ConfigureIdentity
+    )
 
-if ($ZipPath) {
-    $zipResolved = Resolve-ExistingPath $ZipPath
-    if (-not $zipResolved) { throw ('Specified ZipPath not found: ' + $ZipPath) }
-    $record = $inventory | Where-Object { $_.FullName -eq $zipResolved } | Select-Object -First 1
-    if (-not $record) {
-        $item = Get-Item -LiteralPath $zipResolved
-        $record = [pscustomobject]@{
-            Name = $item.Name
-            FullName = $item.FullName
-            Kind = Get-SnapshotKindFromName $item.Name
-            TimestampUtc = $item.LastWriteTimeUtc
-            Revision = Convert-RevisionStringToNumber -Name $item.Name
-            LastWriteTimeUtc = $item.LastWriteTimeUtc
-            Manifest = Get-SnapshotManifestFromZip -ZipPath $item.FullName
-        }
+    if (-not (Test-Path -LiteralPath (Join-Path $RepoRoot '.git'))) {
+        throw "Project root is not a git repository: $RepoRoot"
     }
-} else {
-    $record = Get-LatestSnapshotRecord -Inventory $inventory -SnapshotKind $SnapshotKind
+
+    $remoteUrl = "https://github.com/$GitHubUsername/$RepoName.git"
+    Write-Host "git_remote_url=$remoteUrl"
+
+    if ($ConfigureIdentity) {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.email',$GitUserEmail)
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('config','user.name',$GitUserName)
+        Write-Host "git_user_email=$GitUserEmail"
+        Write-Host "git_user_name=$GitUserName"
+    }
+
+    $hasOrigin = $true
+    try {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','get-url','origin') | Out-Null
+    } catch {
+        $hasOrigin = $false
+    }
+
+    if ($hasOrigin) {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','set-url','origin',$remoteUrl)
+    } else {
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('remote','add','origin',$remoteUrl)
+    }
+
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('branch','-M',$BranchName)
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('add','-A')
+
+    $statusLines = (& git -C $RepoRoot status --porcelain 2>&1)
+    $statusExitCode = $LASTEXITCODE
+    if ($statusExitCode -ne 0) {
+        throw "git status --porcelain failed with exit code $statusExitCode"
+    }
+
+    if ($statusLines) {
+        Write-Host 'git_changes_detected=true'
+        Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('commit','-m',$CommitMessage)
+    } else {
+        Write-Host 'git_changes_detected=false'
+        Write-Host 'No tracked or staged changes detected after snapshot apply. Skipping commit.'
+    }
+
+    Invoke-Git -WorkingDirectory $RepoRoot -Arguments @('push','-u','origin',$BranchName)
 }
 
-Write-Info ('selected_snapshot=' + $record.FullName)
-Write-Info ('selected_snapshot_kind=' + $record.Kind)
-Write-Info ('selected_snapshot_timestamp_utc=' + $record.TimestampUtc.ToString('o'))
-Write-Info ('selected_snapshot_revision=' + $record.Revision)
+$latest = Get-LatestSnapshot -Root $SnapshotsRoot -WantSparse:$PreferSparse.IsPresent -WantFull:$PreferFull.IsPresent
+$kind = Get-SnapshotKind $latest.Name
+Write-Host "latest_snapshot=$($latest.FullName)"
+Write-Host "snapshot_kind=$kind"
+Write-Host "snapshot_lastwrite=$($latest.LastWriteTime)"
+if ($ListOnly) { return }
 
-if ($ListOnly) {
-    $inventory | Where-Object { $_.Kind -ne 'utility' } | Sort-Object TimestampUtc, Revision, Name | ForEach-Object {
-        Write-Host ('candidate kind={0} timestamp_utc={1} revision={2} name={3}' -f $_.Kind, $_.TimestampUtc.ToString('o'), $_.Revision, $_.Name)
-    }
-    return
-}
-
-$expanded = Expand-SnapshotToTemp -ZipPath $record.FullName -TempPrefix 'pyAIGameEngine_apply'
-Write-Info ('snapshot_layout=' + $expanded.SnapshotLayout)
+$expanded = Expand-SnapshotToTemp -ZipPath $latest.FullName
+Write-Host "snapshot_layout=$($expanded.SnapshotLayout)"
 try {
-    if ($SyncMode -eq 'Replace') {
-        Clear-ProjectKeep -ProjectRoot $context.ProjectRoot -PreserveTopLevel $PreserveTopLevel
-    }
-    Invoke-RobocopyDirectory -Source $expanded.ProjectFolder -Destination $context.ProjectRoot
-    Write-Info ('applied_snapshot_to=' + $context.ProjectRoot)
-
-    if ($ConfigureGitIdentity -and -not $CommitAndPush) {
-        Ensure-GitIdentityAndRemote -RepoRoot $context.ProjectRoot -GitHubUsername $context.GitHubUsername -RepoName $context.RepoName -GitUserEmail $context.GitUserEmail -GitUserName $context.GitUserName -BranchName $context.BranchName -SetRemoteUrl:$SetRemoteUrl.IsPresent
-    }
+    Copy-Tree -Source $expanded.ProjectFolder -Destination $ProjectRoot
+    Write-Host "applied_snapshot_to=$ProjectRoot"
 
     if ($CommitAndPush) {
-        Ensure-GitIdentityAndRemote -RepoRoot $context.ProjectRoot -GitHubUsername $context.GitHubUsername -RepoName $context.RepoName -GitUserEmail $context.GitUserEmail -GitUserName $context.GitUserName -BranchName $context.BranchName -SetRemoteUrl:$SetRemoteUrl.IsPresent
-        Commit-AndPushIfChanged -RepoRoot $context.ProjectRoot -BranchName $context.BranchName -CommitMessage $CommitMessage
+        Update-GitRepo `
+            -RepoRoot $ProjectRoot `
+            -GitHubUsername $GitHubUsername `
+            -RepoName $RepoName `
+            -GitUserEmail $GitUserEmail `
+            -GitUserName $GitUserName `
+            -BranchName $BranchName `
+            -CommitMessage $CommitMessage `
+            -ConfigureIdentity:$ConfigureGitIdentity.IsPresent
     }
 } finally {
-    if ($expanded -and $expanded.TempRoot -and (Test-Path -LiteralPath $expanded.TempRoot)) {
+    if (Test-Path -LiteralPath $expanded.TempRoot) {
         Remove-Item -LiteralPath $expanded.TempRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
 }
