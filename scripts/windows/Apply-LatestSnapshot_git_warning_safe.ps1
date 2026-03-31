@@ -98,17 +98,9 @@ function Invoke-Git {
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
-    $quotedArgs = @()
     foreach ($arg in $Arguments) {
-        if ($null -eq $arg) { $arg = '' }
-        $escaped = $arg.Replace('"', '\"')
-        if ($escaped -match '[\s"]') {
-            $quotedArgs += ('"' + $escaped + '"')
-        } else {
-            $quotedArgs += $escaped
-        }
+        [void]$psi.ArgumentList.Add($arg)
     }
-    $psi.Arguments = ($quotedArgs -join ' ')
 
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo = $psi
