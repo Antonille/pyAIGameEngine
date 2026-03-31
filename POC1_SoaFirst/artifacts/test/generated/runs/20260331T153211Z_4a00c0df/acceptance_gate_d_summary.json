@@ -1,0 +1,1322 @@
+{
+  "checks": [
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_0",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_0",
+      "passed": true
+    },
+    {
+      "details": "input=2/2 output=4/4",
+      "name": "scheduler.freshness.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=64 expected=64",
+      "name": "scheduler.batchability_field.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_0",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_0",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_1",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_1",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_2",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_2",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_2",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_2",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_3",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_3",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_3",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_3",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_4",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_4",
+      "passed": true
+    },
+    {
+      "details": "input=2/2 output=4/4",
+      "name": "scheduler.freshness.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=64 expected=64",
+      "name": "scheduler.batchability_field.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_4",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_4",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_5",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_5",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_5",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_5",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_6",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_6",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_6",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_6",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_7",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_7",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_7",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_7",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_8",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_8",
+      "passed": true
+    },
+    {
+      "details": "input=2/2 output=4/4",
+      "name": "scheduler.freshness.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=64 expected=64",
+      "name": "scheduler.batchability_field.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_8",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_8",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_9",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_9",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_9",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_9",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_10",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_10",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_10",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_10",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_11",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_11",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_11",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_11",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_12",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_12",
+      "passed": true
+    },
+    {
+      "details": "input=2/2 output=4/4",
+      "name": "scheduler.freshness.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=64 expected=64",
+      "name": "scheduler.batchability_field.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_12",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_12",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_13",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_13",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_13",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_13",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_14",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_14",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_14",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_14",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_15",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_15",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_15",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_15",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_16",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_16",
+      "passed": true
+    },
+    {
+      "details": "input=2/2 output=4/4",
+      "name": "scheduler.freshness.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=64 expected=64",
+      "name": "scheduler.batchability_field.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_16",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_16",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_17",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_17",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_17",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_17",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_18",
+      "passed": true
+    },
+    {
+      "details": "input=1/1 output=2/2",
+      "name": "scheduler.freshness.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=128 expected=128",
+      "name": "scheduler.batchability_field.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_18",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_18",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_18",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=2",
+      "name": "scheduler.cadence.agent_reflex_v1.cycle_19",
+      "passed": true
+    },
+    {
+      "details": "expected_due=False actual_due=False cadence=4",
+      "name": "scheduler.cadence.agent_contextual_v1.cycle_19",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_hold_v1.cycle_19",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "expected_due=True actual_due=True cadence=1",
+      "name": "scheduler.cadence.agent_cleanup_v1.cycle_19",
+      "passed": true
+    },
+    {
+      "details": "input=6/6 output=6/6",
+      "name": "scheduler.freshness.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=reuse_last expected=reuse_last",
+      "name": "scheduler.fallback.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "decision=96 expected=96",
+      "name": "scheduler.batchability_field.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "actual=10 expected=10",
+      "name": "scheduler.count.agent_reflex_v1",
+      "passed": true
+    },
+    {
+      "details": "actual=5 expected=5",
+      "name": "scheduler.count.agent_contextual_v1",
+      "passed": true
+    },
+    {
+      "details": "actual=20 expected=20",
+      "name": "scheduler.count.agent_hold_v1",
+      "passed": true
+    },
+    {
+      "details": "actual=20 expected=20",
+      "name": "scheduler.count.agent_cleanup_v1",
+      "passed": true
+    },
+    {
+      "details": "batch_sizes=[2, 2, 1] expected=[2, 2, 1]",
+      "name": "scheduler.batchability.split",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_reflex_v1 actor_family=agent_family block=action4_v1 mode=replace rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=1 baseline=None baseline_key= supersedes=None supersedes_key= scope=agent_reflex_v1|agent_family|action4_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
+      "name": "packet.replace.initial",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_reflex_v1 actor_family=agent_family block=action4_v1 mode=replace rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=2 baseline=1 baseline_key=f61dbdf56a3d9efa supersedes=1 supersedes_key=f61dbdf56a3d9efa scope=agent_reflex_v1|agent_family|action4_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
+      "name": "packet.replace.supersede",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_contextual_v1 actor_family=agent_family block=action4_delta_v1 mode=delta rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=4 baseline=3 baseline_key=f61dbdf56a3d9efa supersedes=None supersedes_key= scope=agent_contextual_v1|agent_family|action4_delta_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
+      "name": "packet.delta.baseline",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_hold_v1 actor_family=agent_family block=action4_hold_v1 mode=no_change rows=4 cols=0 deadline=action_application version=action_packet_v4 generation=5 baseline=5 baseline_key=f61dbdf56a3d9efa supersedes=5 supersedes_key=f61dbdf56a3d9efa scope=agent_hold_v1|agent_family|action4_hold_v1|batch0 key=f61dbdf56a3d9efa cache=hit_no_change",
+      "name": "packet.no_change.cache_hit",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_hold_v1 actor_family=agent_family block=action4_hold_v1 mode=replace rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=6 baseline=5 baseline_key=f61dbdf56a3d9efa supersedes=5 supersedes_key=f61dbdf56a3d9efa scope=agent_hold_v1|agent_family|action4_hold_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
+      "name": "scheduler.freshness.output_staleness",
+      "passed": true
+    },
+    {
+      "details": "source_family=agent_cleanup_v1 actor_family=agent_family block=action4_delete_v1 mode=delete rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=8 baseline=7 baseline_key=f61dbdf56a3d9efa supersedes=7 supersedes_key=f61dbdf56a3d9efa scope=agent_cleanup_v1|agent_family|action4_delete_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
+      "name": "packet.delete.supersede",
+      "passed": true
+    }
+  ],
+  "gate_status": "cleared",
+  "summary": {
+    "delete_generation_chain": [
+      7,
+      8
+    ],
+    "delta_generation_chain": [
+      3,
+      4
+    ],
+    "expected_schedule_counts": {
+      "agent_cleanup_v1": 20,
+      "agent_contextual_v1": 5,
+      "agent_hold_v1": 20,
+      "agent_reflex_v1": 10
+    },
+    "gate_name": "Phase 3 Gate D \u2014 Scheduler and Packet Acceptance Gate",
+    "hold_generation_chain": [
+      5,
+      5,
+      6
+    ],
+    "replace_generation_chain": [
+      1,
+      2
+    ],
+    "schedule_counts": {
+      "agent_cleanup_v1": 20,
+      "agent_contextual_v1": 5,
+      "agent_hold_v1": 20,
+      "agent_reflex_v1": 10
+    },
+    "synthetic_batch_sizes": [
+      2,
+      2,
+      1
+    ]
+  }
+}

@@ -7,13 +7,17 @@
 <text x="12" y="70.0" font-size="12">ms per step</text>
 <circle cx="70.00" cy="201.21" r="4.5" fill="#1f77b4" />
 <text x="52.00" y="370.00" font-size="10">1</text>
-<circle cx="343.33" cy="70.00" r="4.5" fill="#1f77b4" />
-<text x="325.33" y="370.00" font-size="10">2</text>
-<circle cx="616.67" cy="199.63" r="4.5" fill="#1f77b4" />
-<text x="598.67" y="370.00" font-size="10">3</text>
-<circle cx="890.00" cy="350.00" r="4.5" fill="#1f77b4" />
-<text x="872.00" y="370.00" font-size="10">4</text>
-<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="70.00,201.21 343.33,70.00 616.67,199.63 890.00,350.00" />
+<circle cx="234.00" cy="70.00" r="4.5" fill="#1f77b4" />
+<text x="216.00" y="370.00" font-size="10">2</text>
+<circle cx="398.00" cy="199.63" r="4.5" fill="#1f77b4" />
+<text x="380.00" y="370.00" font-size="10">3</text>
+<circle cx="562.00" cy="350.00" r="4.5" fill="#1f77b4" />
+<text x="544.00" y="370.00" font-size="10">4</text>
+<circle cx="726.00" cy="144.26" r="4.5" fill="#1f77b4" />
+<text x="708.00" y="370.00" font-size="10">5</text>
+<circle cx="890.00" cy="185.93" r="4.5" fill="#1f77b4" />
+<text x="872.00" y="370.00" font-size="10">6</text>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="70.00,201.21 234.00,70.00 398.00,199.63 562.00,350.00 726.00,144.26 890.00,185.93" />
 <text x="720.0" y="80.0" font-size="12">min=0.5837</text>
 <text x="720.0" y="96.0" font-size="12">max=0.7723</text>
 </svg>
