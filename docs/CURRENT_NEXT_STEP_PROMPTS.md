@@ -1,3 +1,7 @@
 # CURRENT NEXT STEP PROMPTS
 
+Open `../OPEN_THIS_REPO_FIRST.md` first for repo routing and preferred working mode.
+
 See `2026 03 31 REV4.9 Current Next-Step Prompts.md`.
+
+Note: on 2026-03-31, repo-write relay became the preferred mode when GitHub connector access is available.
