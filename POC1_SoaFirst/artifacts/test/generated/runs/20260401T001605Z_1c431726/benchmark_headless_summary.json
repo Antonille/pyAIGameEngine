@@ -17,8 +17,75 @@
   "cache_hits": 856,
   "cache_invalidations": 0,
   "cache_misses": 519,
+  "configurable_interface": {
+    "compatibility_handshake": {
+      "notes": [
+        "startup_validation_passed",
+        "startup_compilation_complete",
+        "hot_path_runtime_lookup_frozen"
+      ],
+      "status": "pass"
+    },
+    "compiled_channels": [
+      {
+        "action_block_name": "",
+        "block_offsets": [
+          [
+            "kinematics_local_v1",
+            0,
+            13
+          ],
+          [
+            "status_local_v1",
+            13,
+            6
+          ]
+        ],
+        "bounded_entity_count": 256,
+        "channel_id": "agent_hot_observation_v1",
+        "dtype": "float32",
+        "feature_blocks": [
+          "kinematics_local_v1",
+          "status_local_v1"
+        ],
+        "plane": "hot_control",
+        "representation_kind": "dense_vector",
+        "role": "observation",
+        "runtime_family": "agent_family",
+        "shape_mode": "bounded_batch",
+        "width": 19
+      },
+      {
+        "action_block_name": "action4_v1",
+        "block_offsets": [],
+        "bounded_entity_count": 256,
+        "channel_id": "agent_hot_action_v1",
+        "dtype": "float32",
+        "feature_blocks": [],
+        "plane": "hot_control",
+        "representation_kind": "dense_vector",
+        "role": "action",
+        "runtime_family": "agent_family",
+        "shape_mode": "bounded_batch",
+        "width": 4
+      }
+    ],
+    "manifest_hash": "f8beb573d8738806636ef7fb931db5e5ef9d48d196c0e855c096a63568566d79",
+    "manifest_id": "agent_hot_control_manifest_v1",
+    "manifest_version": "1.0.0",
+    "runtime_binding": "compiled_startup_plan_v1",
+    "supported_representation_kinds": [
+      "dense_vector"
+    ],
+    "supported_roles": [
+      "observation",
+      "action"
+    ],
+    "validator_hash": "abbb0cd1e06cae7dd39f81afc19e5aed958834b67f7ff4a02f6b00191dae3ab8",
+    "validator_version": "configurable_interface_validator_v1"
+  },
   "delete_count": 10500,
-  "elapsed_s": 0.3508990000009362,
+  "elapsed_s": 0.3194696999998996,
   "events": {
     "agent_reward": 0,
     "hit_ground": 803,
@@ -6184,7 +6251,7 @@
     "family=agent_hold_v1 runtime_family=agent_family entities=64 batches=1 feature_blocks=['policy_identity_v1'] feature_width=2 cadence=1 input_staleness<=6 output_staleness<=6 deadline=action_application fallback=reuse_last",
     "family=agent_cleanup_v1 runtime_family=agent_family entities=64 batches=1 feature_blocks=['policy_identity_v1', 'sparse_handle_refs_v1'] feature_width=4 cadence=1 input_staleness<=6 output_staleness<=6 deadline=action_application fallback=reuse_last"
   ],
-  "ms_per_step": 0.7017980000018724,
+  "ms_per_step": 0.6389393999997992,
   "no_change_count": 27392,
   "reuse_ratio": 0.6225454545454545,
   "schedule_counts": {
@@ -6200,13 +6267,13 @@
     "agent_reflex_v1"
   ],
   "stage_avg_ms": {
-    "action_application": 0.072773,
-    "ai": 0.365399,
-    "event_processing": 0.048125,
-    "input": 0.001018,
-    "observation_build": 0.052044,
-    "physics": 0.046222,
-    "render_snapshot": 0.099101
+    "action_application": 0.065158,
+    "ai": 0.332223,
+    "event_processing": 0.043697,
+    "input": 0.000925,
+    "observation_build": 0.047835,
+    "physics": 0.04241,
+    "render_snapshot": 0.091428
   },
   "steps": 500,
   "transfer_batches": 1375,

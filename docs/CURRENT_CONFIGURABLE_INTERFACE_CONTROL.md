@@ -1,0 +1,3 @@
+# CURRENT CONFIGURABLE INTERFACE CONTROL
+
+See `2026 03 31 REV4.9 Configurable Interface Control.md`.

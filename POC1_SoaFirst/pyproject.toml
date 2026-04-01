@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyaigameengine-poc1-planktic-soa-bulletgl"
-version = "0.1.14"
+version = "0.1.15"
 description = "POC1 for pyAIGameEngine: SoA state + fallback-first simple integrator backend + optional PyBullet path + pyglet/ModernGL renderer + Gymnasium wrapper. Baseline: Python 3.12.x"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"

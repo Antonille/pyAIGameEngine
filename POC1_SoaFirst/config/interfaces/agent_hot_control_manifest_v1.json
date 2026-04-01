@@ -1,0 +1,114 @@
+{
+  "manifest_id": "agent_hot_control_manifest_v1",
+  "manifest_version": "1.0.0",
+  "schema_version": "1.0",
+  "runtime_binding": "compiled_startup_plan_v1",
+  "human_doc_relative_path": "docs/2026 03 31 REV4.9 Configurable Interface Control.md",
+  "stakeholder_summary": "First bounded configurable-interface slice for the fallback-first POC hot control plane.",
+  "supported_roles": ["observation", "action"],
+  "supported_representation_kinds": ["dense_vector"],
+  "deferred_roles": ["reward", "episode_state", "memory", "diagnostic", "report", "latent", "narration"],
+  "boundary_and_exclusion_zones": {
+    "valid_runtime_binding": ["compiled_startup_plan_v1"],
+    "required_planes": ["hot_control"],
+    "excluded_planes_in_first_slice": ["warm_semantic", "cold_semantic"],
+    "excluded_hot_path_behaviors": [
+      "per_tick_schema_walk",
+      "per_tick_string_lookup",
+      "runtime_layout_mutation",
+      "runtime_schema_discovery"
+    ],
+    "deferred_representation_kinds": [
+      "dense_tensor",
+      "image",
+      "grid",
+      "voxel_block",
+      "point_cloud",
+      "graph",
+      "set",
+      "ragged_sequence",
+      "token_sequence",
+      "sparse_events",
+      "latent_code"
+    ]
+  },
+  "channels": [
+    {
+      "channel_id": "agent_hot_observation_v1",
+      "role": "observation",
+      "representation_kind": "dense_vector",
+      "plane": "hot_control",
+      "runtime_family": "agent_family",
+      "producer": "engine",
+      "consumer": "controller",
+      "location": "feature_pack(agent_reflex_v1)",
+      "what": "Hot control observation block for repeated agent-family controllers.",
+      "where": "Packed from runtime-schema-backed feature blocks kinematics_local_v1 + status_local_v1.",
+      "what_it_does": "Exposes a fixed-width dense observation vector for controller families without exposing raw solver layout.",
+      "cadence_planktics": 1,
+      "freshness_policy": "reuse_last",
+      "stale_values_allowed": true,
+      "resampling_owner": "consumer",
+      "dtype": "float32",
+      "width": 19,
+      "shape_mode": "bounded_batch",
+      "bounded_entity_count": 256,
+      "feature_blocks": ["kinematics_local_v1", "status_local_v1"],
+      "action_block_name": "",
+      "valid_configuration_space": {
+        "runtime_family": "agent_family",
+        "allowed_feature_blocks": ["kinematics_local_v1", "status_local_v1"],
+        "allowed_model_families": ["agent_reflex_v1"],
+        "allowed_consumer_roles": ["controller"],
+        "allowed_dtypes": ["float32"],
+        "shape_mode": "bounded_batch",
+        "bounded_entity_count_min": 1,
+        "bounded_entity_count_max": 256,
+        "width": 19
+      },
+      "exclusion_zones": {
+        "disallowed_feature_blocks_in_first_slice": ["action_context_v1", "sparse_handle_refs_v1"],
+        "disallowed_representation_kinds": ["graph", "set", "token_sequence", "image"],
+        "disallowed_runtime_behaviors": ["dynamic_field_fetch", "ragged_batch_shape", "hot_loop_schema_lookup"]
+      }
+    },
+    {
+      "channel_id": "agent_hot_action_v1",
+      "role": "action",
+      "representation_kind": "dense_vector",
+      "plane": "hot_control",
+      "runtime_family": "agent_family",
+      "producer": "controller",
+      "consumer": "engine",
+      "location": "action_block(action4_v1 via action packet lane)",
+      "what": "Hot control action block for repeated agent-family controllers.",
+      "where": "Bound to action4_v1 and written through the packet/control boundary before authoritative state.action consumption.",
+      "what_it_does": "Carries a fixed-width dense action vector into the existing action-packet lane without changing the authoritative hot-path mapping.",
+      "cadence_planktics": 1,
+      "freshness_policy": "strict_fresh",
+      "stale_values_allowed": false,
+      "resampling_owner": "producer",
+      "dtype": "float32",
+      "width": 4,
+      "shape_mode": "bounded_batch",
+      "bounded_entity_count": 256,
+      "feature_blocks": [],
+      "action_block_name": "action4_v1",
+      "valid_configuration_space": {
+        "runtime_family": "agent_family",
+        "allowed_action_blocks": ["action4_v1"],
+        "allowed_producer_roles": ["controller"],
+        "allowed_dtypes": ["float32"],
+        "shape_mode": "bounded_batch",
+        "bounded_entity_count_min": 1,
+        "bounded_entity_count_max": 256,
+        "width": 4
+      },
+      "exclusion_zones": {
+        "disallowed_action_blocks_in_first_slice": ["action4_delta_v1", "action4_hold_v1", "action4_delete_v1", "action4_env_v1"],
+        "disallowed_representation_kinds": ["graph", "token_sequence", "ragged_sequence"],
+        "disallowed_runtime_behaviors": ["direct_solver_write", "dynamic_width_action_payload"]
+      }
+    }
+  ]
+}

@@ -14,6 +14,7 @@ from .comparison import ComparisonEngine
 from .projection import ProjectionEngine
 from .records import TestRunRecord
 from .reporting import CurrentTestReportBuilder
+from .capture import capture_default_interface_summary
 from .suites import SuiteRunContext, TestSuiteRegistry, build_default_registry
 
 SCHEMA_VERSION = "1.0"
@@ -63,12 +64,14 @@ class IntegratedTestHarness:
         }
 
     def _environment_metadata(self) -> dict[str, Any]:
+        interface_summary = capture_default_interface_summary()
         return {
             "backend_mode": self.config.backend_mode,
             "benchmark_steps": self.config.benchmark_steps,
             "benchmark_bodies": self.config.benchmark_bodies,
             "warmup_numba": self.config.warmup_numba,
             "cwd": str(self.config.poc_root).replace("\\", "/"),
+            "configurable_interface": interface_summary,
         }
 
     def _parameter_bundle(self) -> dict[str, Any]:
@@ -92,6 +95,7 @@ class IntegratedTestHarness:
                 "regenerable_current_report_builder_v1",
                 "deterministic_reset_replay_validation_v1",
                 "packet_oriented_minimal_env_adapter_v1",
+                "startup_compiled_configurable_interface_slice_v1",
             ],
             "unimplemented_components": [
                 "full_regression_suite_matrix",
@@ -106,6 +110,7 @@ class IntegratedTestHarness:
                 "projection method is provisional and assumption-heavy",
                 "current report visuals are lightweight SVG scaffolds",
                 "adapter_rl suite remains thin and not a public RL API commitment",
+                "configurable interface implementation remains limited to a hot control-plane subset",
             ],
             "assumptions": [
                 "archival JSONL remains the durable truth for this phase",
@@ -123,6 +128,7 @@ class IntegratedTestHarness:
                 "frozen_projection_weight_baseline_with_per_run_realization_fractions",
                 "per_run_generated_artifacts_under_artifacts/test/generated/runs",
                 "minimal_env_adapter_uses_packet_boundary",
+                "canonical_interface_manifest_compiles_to_startup_runtime_plan_v1",
             ],
             "deferred_design_choices": [
                 "parquet_or_sql_mirror",

@@ -9,8 +9,11 @@ from typing import Any
 import numpy as np
 
 from poc1_engine.ai.action_bridge import build_default_action_bridge
+from poc1_engine.ai.feature_blocks import build_default_feature_block_registry
 from poc1_engine.ai.gate_d_acceptance import build_scheduler, build_transfer_planner, seed_state
 from poc1_engine.ai.transfer_planner import summarize_transfer_plans
+from poc1_engine.interfaces.configurable_interface import load_and_compile_default_manifest
+from poc1_engine.runtime.runtime_schema import build_default_runtime_schema_registry
 from poc1_engine.engine.loop import EngineConfig, EngineLoop
 from poc1_engine.fields.coupling import apply_center_of_mass_field_coupling
 from poc1_engine.fields.field_source_store import FieldSourceStore
@@ -34,6 +37,14 @@ def parse_stage_lines(lines: list[str]) -> dict[str, float]:
     return result
 
 
+def capture_default_interface_summary() -> dict[str, Any]:
+    runtime_schemas = build_default_runtime_schema_registry()
+    feature_blocks = build_default_feature_block_registry(runtime_schemas)
+    action_bridge = build_default_action_bridge()
+    plan = load_and_compile_default_manifest(runtime_schemas, feature_blocks, action_bridge)
+    return plan.summary()
+
+
 def capture_headless_benchmark(*, steps: int, bodies: int, backend_mode: str, warmup_numba: bool) -> tuple[dict[str, Any], SoAState]:
     state = SoAState.create(capacity=bodies)
     seed_state(state)
@@ -45,6 +56,7 @@ def capture_headless_benchmark(*, steps: int, bodies: int, backend_mode: str, wa
     scheduler = build_scheduler()
     transfer_planner = build_transfer_planner()
     action_bridge = build_default_action_bridge()
+    interface_summary = capture_default_interface_summary()
     loop = EngineLoop(
         state=state,
         backend=backend,
@@ -100,6 +112,7 @@ def capture_headless_benchmark(*, steps: int, bodies: int, backend_mode: str, wa
         "warmup_numba": bool(warmup_numba),
         "final_positions_xyz": state.pos[: state.body_count].copy().tolist(),
         "final_agent_flags": state.agent_active[: state.body_count].astype(np.int32).tolist(),
+        "configurable_interface": interface_summary,
     }
     return payload, state
 
@@ -175,6 +188,7 @@ def capture_gym_rollout(*, steps: int, backend_mode: str, seed: int = 0, action_
     spec.loader.exec_module(module)
     env_class = getattr(module, "POC1GymEnv")
 
+    interface_summary = capture_default_interface_summary()
     env = env_class(backend_mode=backend_mode)
     obs, info = env.reset(seed=seed)
     total_reward = 0.0
@@ -205,6 +219,7 @@ def capture_gym_rollout(*, steps: int, backend_mode: str, seed: int = 0, action_
         "timing_snapshot": last_info.get("timing_snapshot", {}),
         "last_external_action_packet_lines": list(last_info.get("last_external_action_packet_lines", [])),
         "last_packet_apply_summary": dict(last_info.get("last_packet_apply_summary", {})),
+        "configurable_interface": interface_summary,
     }
 
 

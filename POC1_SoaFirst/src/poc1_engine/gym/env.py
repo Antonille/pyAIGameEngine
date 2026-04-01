@@ -7,6 +7,9 @@ import numpy as np
 from gymnasium import spaces
 
 from poc1_engine.ai.action_bridge import build_default_action_bridge
+from poc1_engine.ai.feature_blocks import build_default_feature_block_registry
+from poc1_engine.interfaces.configurable_interface import load_and_compile_default_manifest
+from poc1_engine.runtime.runtime_schema import build_default_runtime_schema_registry
 from poc1_engine.engine.loop import EngineConfig, EngineLoop
 from poc1_engine.gym.adapter import PacketEnvActionAdapter
 from poc1_engine.physics.simple_integrator_backend import SimpleIntegratorBackend
@@ -31,6 +34,9 @@ class POC1GymEnv(gym.Env):
         self.backend = SimpleIntegratorBackend(mode=backend_mode)
         self.backend.connect()
         self.action_bridge = build_default_action_bridge()
+        runtime_schemas = build_default_runtime_schema_registry()
+        feature_blocks = build_default_feature_block_registry(runtime_schemas)
+        self.configurable_interface = load_and_compile_default_manifest(runtime_schemas, feature_blocks, self.action_bridge)
         self.loop = EngineLoop(self.state, self.backend, EngineConfig(dt=1.0 / 60.0), action_bridge=self.action_bridge)
         self.adapter = PacketEnvActionAdapter(loop=self.loop, actor_indices=np.asarray([self.agent_index], dtype=np.int32))
         self.step_limit = 512
@@ -76,6 +82,7 @@ class POC1GymEnv(gym.Env):
                 "physics_consumption",
             ],
             "timing_snapshot": self.timing_snapshot(),
+            "configurable_interface": self.configurable_interface.summary(),
         }
         return self._obs(), info
 
@@ -93,6 +100,7 @@ class POC1GymEnv(gym.Env):
             "control_path": "action_packets",
             "last_external_action_packet_lines": list(self.loop.last_external_action_packet_lines),
             "last_packet_apply_summary": dict(self.loop.last_input_application_summary),
+            "configurable_interface": self.configurable_interface.summary(),
         }
         self.state.reward_accum[self.agent_index] = 0.0
         return obs, reward, terminated, truncated, info

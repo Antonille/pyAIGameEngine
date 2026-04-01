@@ -1279,10 +1279,87 @@
       "details": "source_family=agent_cleanup_v1 actor_family=agent_family block=action4_delete_v1 mode=delete rows=4 cols=4 deadline=action_application version=action_packet_v4 generation=8 baseline=7 baseline_key=f61dbdf56a3d9efa supersedes=7 supersedes_key=f61dbdf56a3d9efa scope=agent_cleanup_v1|agent_family|action4_delete_v1|batch0 key=f61dbdf56a3d9efa cache=miss_build",
       "name": "packet.delete.supersede",
       "passed": true
+    },
+    {
+      "details": "status=pass runtime_binding=compiled_startup_plan_v1",
+      "name": "configurable_interface.handshake",
+      "passed": true
+    },
+    {
+      "details": "{'channel_id': 'agent_hot_observation_v1', 'role': 'observation', 'runtime_family': 'agent_family', 'width': 19, 'dtype': 'float32', 'representation_kind': 'dense_vector', 'plane': 'hot_control', 'shape_mode': 'bounded_batch', 'bounded_entity_count': 256, 'feature_blocks': ['kinematics_local_v1', 'status_local_v1'], 'block_offsets': [['kinematics_local_v1', 0, 13], ['status_local_v1', 13, 6]], 'action_block_name': ''}",
+      "name": "configurable_interface.observation_width",
+      "passed": true
     }
   ],
   "gate_status": "cleared",
   "summary": {
+    "configurable_interface": {
+      "compatibility_handshake": {
+        "notes": [
+          "startup_validation_passed",
+          "startup_compilation_complete",
+          "hot_path_runtime_lookup_frozen"
+        ],
+        "status": "pass"
+      },
+      "compiled_channels": [
+        {
+          "action_block_name": "",
+          "block_offsets": [
+            [
+              "kinematics_local_v1",
+              0,
+              13
+            ],
+            [
+              "status_local_v1",
+              13,
+              6
+            ]
+          ],
+          "bounded_entity_count": 256,
+          "channel_id": "agent_hot_observation_v1",
+          "dtype": "float32",
+          "feature_blocks": [
+            "kinematics_local_v1",
+            "status_local_v1"
+          ],
+          "plane": "hot_control",
+          "representation_kind": "dense_vector",
+          "role": "observation",
+          "runtime_family": "agent_family",
+          "shape_mode": "bounded_batch",
+          "width": 19
+        },
+        {
+          "action_block_name": "action4_v1",
+          "block_offsets": [],
+          "bounded_entity_count": 256,
+          "channel_id": "agent_hot_action_v1",
+          "dtype": "float32",
+          "feature_blocks": [],
+          "plane": "hot_control",
+          "representation_kind": "dense_vector",
+          "role": "action",
+          "runtime_family": "agent_family",
+          "shape_mode": "bounded_batch",
+          "width": 4
+        }
+      ],
+      "manifest_hash": "f8beb573d8738806636ef7fb931db5e5ef9d48d196c0e855c096a63568566d79",
+      "manifest_id": "agent_hot_control_manifest_v1",
+      "manifest_version": "1.0.0",
+      "runtime_binding": "compiled_startup_plan_v1",
+      "supported_representation_kinds": [
+        "dense_vector"
+      ],
+      "supported_roles": [
+        "observation",
+        "action"
+      ],
+      "validator_hash": "abbb0cd1e06cae7dd39f81afc19e5aed958834b67f7ff4a02f6b00191dae3ab8",
+      "validator_version": "configurable_interface_validator_v1"
+    },
     "delete_generation_chain": [
       7,
       8

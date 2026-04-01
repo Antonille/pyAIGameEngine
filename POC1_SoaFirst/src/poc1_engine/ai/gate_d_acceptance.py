@@ -10,6 +10,7 @@ from poc1_engine.ai.feature_blocks import build_default_feature_block_registry, 
 from poc1_engine.ai.model_family import FallbackPolicy, FreshnessSpec, ModelFamilySpec
 from poc1_engine.ai.scheduler import AIScheduler, ScheduleDecision
 from poc1_engine.ai.transfer_planner import FamilyTransferPlan, TransferPlanner
+from poc1_engine.interfaces.configurable_interface import load_and_compile_default_manifest
 from poc1_engine.runtime.runtime_schema import build_default_runtime_schema_registry
 from poc1_engine.state.soa_state import SoAState
 
@@ -110,6 +111,15 @@ def build_transfer_planner() -> TransferPlanner:
     return TransferPlanner(runtime_schemas, feature_blocks, feature_packs)
 
 
+
+
+def build_default_interface_summary() -> dict[str, Any]:
+    runtime_schemas = build_default_runtime_schema_registry()
+    feature_blocks = build_default_feature_block_registry(runtime_schemas)
+    action_bridge = build_default_action_bridge()
+    plan = load_and_compile_default_manifest(runtime_schemas, feature_blocks, action_bridge)
+    return plan.summary()
+
 def _require(name: str, passed: bool, details: str) -> AcceptanceCheck:
     return AcceptanceCheck(name=name, passed=passed, details=details)
 
@@ -126,6 +136,7 @@ def run_gate_d_acceptance() -> AcceptanceRunResult:
     scheduler = build_scheduler()
     transfer_planner = build_transfer_planner()
     action_bridge = build_default_action_bridge()
+    interface_summary = build_default_interface_summary()
 
     family_specs = scheduler.family_specs
     schedule_counts = {name: 0 for name in family_specs}
@@ -335,6 +346,27 @@ def run_gate_d_acceptance() -> AcceptanceRunResult:
         )
     )
 
+    checks.extend(
+        [
+            _require(
+                name="configurable_interface.handshake",
+                passed=(
+                    interface_summary.get("compatibility_handshake", {}).get("status") == "pass"
+                    and interface_summary.get("runtime_binding") == "compiled_startup_plan_v1"
+                ),
+                details=(
+                    f"status={interface_summary.get('compatibility_handshake', {}).get('status')} "
+                    f"runtime_binding={interface_summary.get('runtime_binding')}"
+                ),
+            ),
+            _require(
+                name="configurable_interface.observation_width",
+                passed=(interface_summary.get("compiled_channels", [{}])[0].get("width") == 19),
+                details=str(interface_summary.get("compiled_channels", [{}])[0]),
+            ),
+        ]
+    )
+
     summary = {
         "gate_name": "Phase 3 Gate D — Scheduler and Packet Acceptance Gate",
         "schedule_counts": schedule_counts,
@@ -344,6 +376,7 @@ def run_gate_d_acceptance() -> AcceptanceRunResult:
         "delta_generation_chain": [contextual_packet.generation_id, contextual_refresh.generation_id],
         "hold_generation_chain": [hold_initial.generation_id, hold_hit.generation_id, hold_stale_refresh.generation_id],
         "delete_generation_chain": [cleanup_packet.generation_id, cleanup_refresh.generation_id],
+        "configurable_interface": interface_summary,
     }
 
     gate_status = "cleared" if all(check.passed for check in checks) else "blocked"

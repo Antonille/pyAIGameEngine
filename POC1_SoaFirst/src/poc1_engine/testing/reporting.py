@@ -128,10 +128,22 @@ class CurrentTestReportBuilder:
             f"- Summary of re-validation of previous success/failure metrics: {', '.join(revalidated_suite_ids) if revalidated_suite_ids else 'No prior matching suite IDs in archive.'}",
             f"- Summary of new success/failure metrics: {', '.join(new_suite_ids) if new_suite_ids else 'No newly introduced suite IDs in this run.'}",
             f"- Validation summary: passed={current_record.validation_summary.get('checks_passed', 0)} failed={current_record.validation_summary.get('checks_failed', 0)} skipped={current_record.validation_summary.get('checks_skipped', 0)} overall_status={current_record.validation_summary.get('overall_status', 'unknown')}",
+        ]
+        interface_summary = current_record.environment_metadata.get("configurable_interface", {})
+        if interface_summary:
+            handshake = interface_summary.get("compatibility_handshake", {})
+            summary_lines.extend(
+                [
+                    f"- Configurable interface manifest: `{interface_summary.get('manifest_id')}` version `{interface_summary.get('manifest_version')}`",
+                    f"- Configurable interface validation status: `{handshake.get('status', 'unknown')}`",
+                    f"- Configurable interface runtime binding: `{interface_summary.get('runtime_binding', 'unknown')}`",
+                ]
+            )
+        summary_lines.extend([
             "",
             "### Performance Tests and Results",
             "",
-        ]
+        ])
         perf = current_record.performance_summary
         if perf.get("primary_metric_ms_per_step") is not None:
             summary_lines.extend(
@@ -210,6 +222,21 @@ class CurrentTestReportBuilder:
         for key, value in sorted(current_record.parameter_bundle.items()):
             summary_lines.append(f"| {key} | {value} |")
 
+        summary_lines.extend(
+            [
+                "",
+                "### Configurable interface validation metadata",
+                "",
+            ]
+        )
+        if interface_summary:
+            summary_lines.extend(
+                [
+                    f"- Manifest hash: `{interface_summary.get('manifest_hash')}`",
+                    f"- Validator version/hash: `{interface_summary.get('validator_version')}` / `{interface_summary.get('validator_hash')}`",
+                    f"- Compiled channels: `{[item.get('channel_id') for item in interface_summary.get('compiled_channels', [])]}`",
+                ]
+            )
         summary_lines.extend(
             [
                 "",

@@ -34,3 +34,6 @@
 *.xlsx binary
 *.pptx binary
 *.docx binary
+
+.gitattributes text eol=lf
+*.jsonl text eol=lf

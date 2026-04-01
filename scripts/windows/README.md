@@ -11,21 +11,17 @@ Historical aliases such as `path_zip_revs` and `path_rev_zip` are retired and sh
 - `Apply-LatestSnapshot.ps1` and `Rebuild-ProjectFromSnapshots.ps1` still exist for legacy snapshot workflows.
 - Snapshot classification in those scripts remains an **open risk** until the dedicated selector-hardening pass is completed.
 - `Replace-RepoWithSnapshot.ps1` is the preferred explicit full-repo replacement path when the goal is cleanup/pruning against a reviewed full snapshot.
+- Root-level `Apply-PackageFromRevs.ps1` is the preferred generic package-apply helper for reviewed ZIP or folder packages from the revisions directory.
 
-## Preferred use cases
-- Use `Replace-RepoWithSnapshot.ps1` when you want to replace the repository with a reviewed full snapshot.
-- Use the older apply/rebuild scripts only when working within the legacy snapshot family and after verifying which ZIP should be selected.
-
-## Transport and line-ending note
-- Prefer downloadable script artifacts or ZIP packages over raw chat copy/paste.
-- Keep repo-owned line-ending policy in `.gitattributes`.
-- If a pasted script must be saved manually, review its line endings in an editor before commit.
+## Validation helpers
+- `run_poc1_validation.ps1` = wrapper for fallback validation / rollout path
+- `run_poc1_integrated_tests.ps1` = wrapper for the integrated harness
+- `POC1_SoaFirst/scripts/validate_configurable_interface.py` = direct configurable-interface manifest validation/compile step
 
 ## Example usage
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\windows\Replace-RepoWithSnapshot.ps1 -ZipPath C:\path\to\pyAIGameEngine_full_snapshot_2026-03-30_REV4.5_cleanup.zip -RepoRoot C:\PythonDev\Dev1\pyGames\pyAIGameEngine
-powershell -ExecutionPolicy Bypass -File .\scripts\windows
-un_poc1_validation.ps1 -BackendMode numpy
-powershell -ExecutionPolicy Bypass -File .\scripts\windows
-un_poc1_integrated_tests.ps1
+powershell -ExecutionPolicy Bypass -File .\Apply-PackageFromRevs.ps1 pyAIGameEngine_full_snapshot_2026-03-31_REV4.9_configurable_interface_full_snapshot.zip -SyncMode Mirror
+powershell -ExecutionPolicy Bypass -File .\scripts\windows\run_poc1_validation.ps1 -BackendMode numpy
+powershell -ExecutionPolicy Bypass -File .\scripts\windows\run_poc1_integrated_tests.ps1 -BackendMode numpy -SuiteGroup core
+.\.venv\Scripts\python.exe .\POC1_SoaFirst\scripts\validate_configurable_interface.py --emit-doc --output-json
 ```
